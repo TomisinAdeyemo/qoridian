@@ -10,9 +10,9 @@
 :root {
   --bg-gradient: radial-gradient(
     circle at 50% 0%, 
-    #080D1B 0%, 
-    #123E07 60%, 
-    #5DB847 100%
+    #0D152B 0%, 
+    #040919 60%, 
+    #123E07 100%
   );
   --text-primary: #ffffff;
   --text-muted: #b7c4d2;
@@ -131,8 +131,8 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1000px; /* Kept at your preferred 1000px scale */
-  height: 1000px;
+  width: 1600px; /* Kept at your preferred 1000px scale */
+  height: 1600px;
   z-index: 1;
   pointer-events: none;
   
@@ -275,6 +275,20 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 
+/* New Flex Container Layout bridging the section container */
+.philosophy-section .philosophy-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+}
+
+/* Constrains your content column to let the graphic breathe on the right */
+.philosophy-text-block {
+  flex: 1.2; 
+  max-width: 680px; /* Snug fit to prevent text from colliding with the graphic */
+}
+
 .philosophy-section h2 {
   font-size: 54px;
   font-weight: 500;
@@ -298,6 +312,93 @@ body {
 
 .philosophy-content p:last-child {
   margin-bottom: 0;
+}
+
+/* Container Box Allocation */
+.philosophy-graphic-block {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+/* Dense Glowing Topography Map Styles */
+.terrain-wireframe-glow {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  /* Vector fluorescent energy lines */
+  filter: drop-shadow(0px 0px 1px #5DB847) 
+          drop-shadow(0px 0px 6px rgba(21, 255, 0, 0.4));
+  transform: rotateX(12deg) rotateY(-12deg); /* Applies natural topographic perspective slant */
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+              filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Smooth Interactive Viewport Hover State */
+.philosophy-graphic-block:hover .terrain-wireframe-glow {
+  transform: rotateX(8deg) rotateY(-6deg) translateY(-4px);
+  filter: drop-shadow(0px 0px 2px #32FF00) 
+          drop-shadow(0px 0px 10px rgba(43, 255, 0, 0.65));
+}
+
+/* Balanced Responsive Adjustments */
+@media (max-width: 992px) {
+  .philosophy-graphic-block {
+    width: 100%;
+    padding: 30px;
+  }
+  
+  .terrain-wireframe-glow {
+    max-width: 440px;
+  }
+}
+
+/* Scalable wireframe settings */
+.terrain-wireframe {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  color: rgba(255, 255, 255, 0.35); /* Subtle wireframe default color */
+  filter: drop-shadow(0px 20px 40px rgba(13, 21, 32, 0.6));
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Micro interaction to give the 3D map spatial reaction when hovered */
+.terrain-wireframe:hover {
+  transform: translateY(-6px) scale(1.02);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Clean fallback wrapper break for tablets/mobile viewports */
+@media (max-width: 992px) {
+  .philosophy-section .philosophy-layout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 50px;
+  }
+
+  .philosophy-text-block,
+  .philosophy-graphic-block {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+  }
+
+    .philosophy-graphic-block {
+    width: 100%;
+    padding: 30px;
+  }
+  
+  .terrain-wireframe-glow {
+    max-width: 440px;
+  }
+
+  .terrain-wireframe {
+    max-width: 420px;
+  }
 }
 
 /* ==========================================================================
