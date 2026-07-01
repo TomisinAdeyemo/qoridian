@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .section-container,
     .meta-text
   `);
-
+  
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
