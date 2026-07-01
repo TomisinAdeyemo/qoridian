@@ -8,7 +8,12 @@
 }
 
 :root {
-  --bg-color: #0d1520;
+  --bg-gradient: radial-gradient(
+    circle at 50% 0%, 
+    #080D1B 0%, 
+    #123E07 60%, 
+    #5DB847 100%
+  );
   --text-primary: #ffffff;
   --text-muted: #b7c4d2;
   --text-eyebrow: #7f8fa0;
@@ -19,7 +24,7 @@
 }
 
 body {
-  background-color: var(--bg-color);
+  background: var(--bg-gradient);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--text-primary);
   min-height: 100vh;
@@ -620,4 +625,66 @@ body {
   .giant-footer-brand-svg svg {
     margin-bottom: -5vw;    /* Adjusts the cropping offset slightly for smaller viewports */
   }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform:
+    translateY(60px)
+    scale(0.98);
+
+  transition:
+    opacity 1s ease,
+    transform 1s cubic-bezier(.22,.61,.36,1);
+
+  will-change: transform, opacity;
+}
+
+.scroll-reveal.show {
+  opacity: 1;
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+
+/* Direction variations */
+
+.hero-content.scroll-reveal {
+  transform:
+    translateY(80px);
+}
+
+
+
+/* Header fade */
+
+.site-header.scroll-reveal {
+  transform:
+    translateY(-30px);
+}
+
+
+/* Footer entrance */
+
+.site-footer.scroll-reveal {
+  transform:
+    translateY(100px);
+}
+
+
+/* Smooth scrolling */
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Optional floating effect */
+
+.feature-card.show:hover {
+  transform:
+    translateY(-6px);
+
+  transition-duration: .4s;
 }
