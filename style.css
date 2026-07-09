@@ -48,6 +48,7 @@ svg {
   width: auto;        /* Ensures the aspect ratio remains perfectly locked */
   display: block;     /* Removes baseline spacing quirks */
   object-fit: contain;
+  margin-top: 50px;
 }
 
 /* Base Utility Layout Container */
