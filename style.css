@@ -7,11 +7,16 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%; /* Prevents iOS from auto-inflating font size on rotate */
+}
+
 :root {
   --bg-gradient: radial-gradient(
-    circle at 70% 0%, 
-    #000000  40%, 
-    #0C1326 60%, 
+    circle at 70% 0%,
+    #000000 40%,
+    #0C1326 60%,
     #000000 100%
   );
   --text-primary: #DFF1DA;
@@ -32,18 +37,17 @@ body {
   position: relative;
 }
 
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .logo-img {
   height: 28px;       /* Controls the vertical scaling of the logo */
   width: auto;        /* Ensures the aspect ratio remains perfectly locked */
   display: block;     /* Removes baseline spacing quirks */
   object-fit: contain;
-}
-
-/* Optional: Make the logo slightly cleaner/smaller on mobile screens */
-@media (max-width: 768px) {
-  .logo-img {
-    height: 22px;
-  }
 }
 
 /* Base Utility Layout Container */
@@ -76,7 +80,7 @@ body {
   width: 100%;
   height: 100%;
   background-size: 120px 120px;
-  background-image: 
+  background-image:
     linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
   z-index: 1;
@@ -93,6 +97,8 @@ body {
   padding: 40px 80px;
   position: relative;
   z-index: 10;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .logo {
@@ -120,8 +126,19 @@ body {
   text-align: center;
   position: relative;
   padding: 60px 20px;
+
 }
 
+/* Dimming overlay — sits between the background image (z-index: 0) and
+   everything else (bg-svg-wrapper z-index:1, hero-content z-index:2) */
+.hero-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6); /* Increase toward 0.8 to dim further, lower toward 0.3 to dim less */
+  z-index: 0;
+  pointer-events: none;
+}
 
 /* ==========================================================================
    Hero Background Logo & Dynamic Brightness Pulse
@@ -131,11 +148,13 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1600px; /* Kept at your preferred 1000px scale */
+  width: 1600px;
   height: 1600px;
+  max-width: 150vw;   /* Keeps the glow from ever overflowing a narrow viewport */
+  max-height: 150vw;
   z-index: 1;
   pointer-events: none;
-  
+
   /* Smooth, hardware-accelerated brightness and breathing animation */
   animation: bg-pulse-container 6s infinite ease-in-out;
   will-change: transform, opacity, filter; /* Optimizes browser performance */
@@ -164,11 +183,11 @@ body {
 /* ==========================================================================
    Hero Content Typography & Layout
    ========================================================================== */
-
 .hero-content {
   position: relative;
   z-index: 2;         /* Keeps the text cleanly layered over the background SVG */
   max-width: 950px;   /* Prevents long text strings from stretching too wide */
+  width: 100%;
   margin: 0 auto;
   text-align: center;
 }
@@ -181,6 +200,7 @@ body {
   letter-spacing: -1.5px;
   margin-bottom: 20px; /* Snug distance to the supporting subheadline */
   color: #DFF1DA;
+  word-wrap: break-word;
 }
 
 /* Rich Green Accent Branding Word */
@@ -239,54 +259,26 @@ body {
 }
 
 /* ==========================================================================
-   Responsive Adaptations (Tablets & Mobile Viewports)
-   ========================================================================== */
-@media (max-width: 768px) {
-  .hero-content {
-    padding: 0 24px;
-  }
-  
-  .hero-content h1 {
-    font-size: 42px;
-    letter-spacing: -1px;
-  }
-  
-  .hero-content h3 {
-    font-size: 22px;
-    margin-bottom: 24px;
-  }
-  
-  .hero-lead {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  .hero-content h4 {
-    font-size: 14px;
-    margin-bottom: 36px;
-  }
-}
-
-/* ==========================================================================
    5. Philosophy Section
    ========================================================================== */
 .philosophy-section {
   padding: 140px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.03);
+  position: relative;
 }
 
-/* New Flex Container Layout bridging the section container */
 .philosophy-section .philosophy-layout {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 60px;
+  gap: 80px; /* Enhanced separation gap */
 }
 
 /* Constrains your content column to let the graphic breathe on the right */
 .philosophy-text-block {
-  flex: 1.2; 
+  flex: 1.2;
   max-width: 680px; /* Snug fit to prevent text from colliding with the graphic */
+  min-width: 0; /* Allows flex children to shrink below content size on narrow screens */
 }
 
 .philosophy-section h2 {
@@ -314,14 +306,6 @@ body {
   margin-bottom: 0;
 }
 
-/* Container layout update to fit the enlarged canvas footprint */
-.philosophy-section .philosophy-layout {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 80px; /* Enhanced separation gap */
-}
-
 /* Let the graphic take up equal weight to support its details */
 .philosophy-graphic-block {
   flex: 1;
@@ -330,6 +314,7 @@ body {
   align-items: center;
   background: transparent; /* Strictly no background block container */
   padding: 0;
+  min-width: 0;
 }
 
 /* Scalable Responsive 3D Valley Vector Elements */
@@ -337,33 +322,20 @@ body {
   width: 100%;
   max-width: 620px; /* Significantly increased frame size */
   height: auto;
-  /* Connects line stroke straight to the parent text muted/green variables */
-  color: var(--text-muted); 
+  color: var(--text-muted);
   opacity: 0.65;
   transform: rotateX(15deg) rotateY(-8deg); /* Isometric perspective angle match */
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
-              color 0.5s ease, 
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.5s ease,
               opacity 0.5s ease;
 }
 
 /* Refined interactive hover logic */
 .philosophy-section:hover .terrain-valley-3d {
   opacity: 0.95;
-  color: #4ade80; /* Switches cleanly to your Qoridian green brand color on layout focus */
+  color: #4ade80; /* Switches cleanly to your brand green color on layout focus */
   transform: rotateX(11deg) rotateY(-4deg) scale(1.03);
-}
-
-/* Balanced Responsive Adjustments */
-@media (max-width: 992px) {
-  .philosophy-graphic-block {
-    width: 100%;
-    padding: 30px;
-  }
-  
-  .terrain-wireframe-glow {
-    max-width: 440px;
-  }
 }
 
 /* Background canvas frame */
@@ -375,18 +347,13 @@ body {
   height: 100%;
   z-index: 1;
   pointer-events: none; /* Prevents background layer from capturing text highlight/mouse events */
-  
-  /* Import your external vector file here */
-  background-image: url('./map2.svg'); 
+
+  background-image: url('./map2.svg');
   background-repeat: no-repeat;
   background-position: center center;
-  
-  /* 'cover' scales the artwork perfectly to fill the section bleed width */
-  background-size: cover; 
-  
-  /* Adjust this transparency value to control how boldly the lines pop out behind the cards */
-  opacity: 0.12; 
-  
+  background-size: cover;
+  opacity: 0.12;
+
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
 }
 
@@ -412,39 +379,9 @@ body {
   color: rgba(255, 255, 255, 0.45);
 }
 
-/* Clean fallback wrapper break for tablets/mobile viewports */
-@media (max-width: 992px) {
-  .philosophy-section .philosophy-layout {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 50px;
-  }
-
-  .philosophy-text-block,
-  .philosophy-graphic-block {
-    width: 100%;
-    max-width: 100%;
-    flex: none;
-  }
-
-    .philosophy-graphic-block {
-    width: 100%;
-    padding: 30px;
-  }
-  
-  .terrain-wireframe-glow {
-    max-width: 440px;
-  }
-
-  .terrain-wireframe {
-    max-width: 420px;
-  }
-}
-
 /* ==========================================================================
    Capabilities Section (What We See Grid)
    ========================================================================== */
-
 .features-section {
   padding: 100px 0;
   background-color: var(--bg-color);
@@ -453,7 +390,7 @@ body {
 }
 
 .features-section .section-container {
-  max-width: 1140px; 
+  max-width: 1140px;
   margin: 0 auto;
   padding: 0 40px;
 }
@@ -476,7 +413,7 @@ body {
   margin-bottom: 48px;
 }
 
-/* 3x2 Grid Array Layout matching Screenshot 2026-07-01 at 00.14.39.jpg */
+/* 3x2 Grid Array Layout */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -487,12 +424,12 @@ body {
 .feature-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 18px; 
+  border-radius: 18px;
   padding: 28px 24px 24px 24px;
   display: flex;
   flex-direction: column;
   position: relative;
-  aspect-ratio: 1.6 / 1; 
+  aspect-ratio: 1.6 / 1;
   min-height: 195px;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
@@ -526,7 +463,7 @@ body {
 
 /* Unified Graphic Scaler & Tone Styling */
 .wireframe-graphic {
-  width: 100px; 
+  width: 100px;
   height: 100px;
   stroke: var(--text-muted);
   opacity: 0.35;
@@ -558,26 +495,6 @@ body {
 }
 
 /* ==========================================================================
-   Responsive Constraints
-   ========================================================================== */
-@media (max-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .features-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .feature-card {
-    aspect-ratio: auto;
-    min-height: 180px;
-  }
-}
-
-/* ==========================================================================
    7. Pull Quote Section
    ========================================================================== */
 .quote-section {
@@ -591,6 +508,7 @@ body {
   line-height: 1.25;
   letter-spacing: -1.5px;
   margin-bottom: 24px;
+  padding: 0 20px;
 }
 
 .quote-section cite {
@@ -628,36 +546,7 @@ body {
 }
 
 /* ==========================================================================
-   9. Fully Adaptive Responsive Design
-   ========================================================================== */
-@media (max-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
-  }
-}
-
-@media (max-width: 768px) {
-  .site-header {
-    padding: 30px 40px;
-  }
-  
-  h1 { font-size: 44px; }
-  .philosophy-section h2, 
-  .deployment-section h2 { font-size: 36px; }
-  .quote-section blockquote { font-size: 32px; }
-  
-  .features-grid {
-    grid-template-columns: 1fr; /* Stack into 1 column for mobile viewports */
-  }
-  
-  .bg-svg-wrapper {
-    width: 400px;
-    height: 400px;
-  }
-}
-
-/* ==========================================================================
-   7. Footer Section (Start a Conversation)
+   9. Footer Section (Start a Conversation)
    ========================================================================== */
 .site-footer {
   position: relative;
@@ -678,7 +567,7 @@ body {
   width: 120%;
   height: 100%;
   background-size: 120px 120px;
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   z-index: 1;
@@ -753,79 +642,410 @@ body {
 }
 
 /* ==========================================================================
-   Mobile/Tablet Clean-ups
+   10. Scroll Reveal Animations
    ========================================================================== */
-@media (max-width: 768px) {
-  .site-footer {
-    min-height: 400px;
-    padding-top: 80px;
-  }
-  .site-footer h2 {
-    font-size: 32px;
-  }
-  .giant-footer-brand-svg svg {
-    margin-bottom: -5vw;    /* Adjusts the cropping offset slightly for smaller viewports */
-  }
-}
-
 .scroll-reveal {
   opacity: 0;
-  transform:
-    translateY(60px)
-    scale(0.98);
-
-  transition:
-    opacity 1s ease,
-    transform 1s cubic-bezier(.22,.61,.36,1);
-
+  transform: translateY(60px) scale(0.98);
+  transition: opacity 1s ease, transform 1s cubic-bezier(.22,.61,.36,1);
   will-change: transform, opacity;
 }
 
 .scroll-reveal.show {
   opacity: 1;
-  transform:
-    translateY(0)
-    scale(1);
+  transform: translateY(0) scale(1);
 }
-
 
 /* Direction variations */
-
 .hero-content.scroll-reveal {
-  transform:
-    translateY(80px);
+  transform: translateY(80px);
 }
-
-
 
 /* Header fade */
-
 .site-header.scroll-reveal {
-  transform:
-    translateY(-30px);
+  transform: translateY(-30px);
 }
-
 
 /* Footer entrance */
-
 .site-footer.scroll-reveal {
-  transform:
-    translateY(100px);
+  transform: translateY(100px);
 }
-
-
-/* Smooth scrolling */
-
-html {
-  scroll-behavior: smooth;
-}
-
 
 /* Optional floating effect */
-
 .feature-card.show:hover {
-  transform:
-    translateY(-6px);
-
+  transform: translateY(-6px);
   transition-duration: .4s;
+}
+
+/* Respect users who've asked for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .bg-svg-wrapper,
+  .scroll-reveal,
+  .terrain-valley-3d,
+  .terrain-wireframe,
+  .feature-card,
+  .wireframe-graphic,
+  .cta-btn,
+  .footer-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   11. RESPONSIVE BREAKPOINTS
+   All section-level responsive rules are consolidated here, from largest
+   to smallest viewport, so nothing overrides itself out of order.
+   ========================================================================== */
+
+/* ---------- Large desktops / laptops (<=1200px) ---------- */
+@media (max-width: 1200px) {
+  .section-container,
+  .features-section .section-container,
+  .footer-container {
+    padding: 0 32px;
+  }
+
+  .hero-content h1 {
+    font-size: 58px;
+  }
+
+  .philosophy-section h2,
+  .deployment-section h2 {
+    font-size: 46px;
+  }
+}
+
+/* ---------- Tablets (<=992px) ---------- */
+@media (max-width: 992px) {
+  .site-header {
+    padding: 32px 40px;
+  }
+
+  .hero-container {
+    min-height: 70vh;
+    padding: 50px 20px;
+  }
+
+  .hero-content h1 {
+    font-size: 48px;
+    letter-spacing: -1px;
+  }
+
+  .hero-content h3 {
+    font-size: 24px;
+  }
+
+  .hero-lead {
+    font-size: 18px;
+  }
+
+  .bg-svg-wrapper {
+    width: 900px;
+    height: 900px;
+  }
+
+  /* Philosophy section stacks vertically */
+  .philosophy-section {
+    padding: 100px 0;
+  }
+
+  .philosophy-section .philosophy-layout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 50px;
+  }
+
+  .philosophy-text-block,
+  .philosophy-graphic-block {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+  }
+
+  .philosophy-graphic-block {
+    padding: 30px 0 0 0;
+    justify-content: center;
+  }
+
+  .philosophy-section h2 {
+    font-size: 38px;
+    max-width: 100%;
+  }
+
+  .terrain-valley-3d,
+  .terrain-wireframe-glow {
+    max-width: 440px;
+  }
+
+  .terrain-wireframe {
+    max-width: 420px;
+  }
+
+  /* Feature grid drops to 2 columns */
+  .features-section {
+    padding: 80px 0;
+  }
+
+  .features-section h2 {
+    font-size: 38px;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quote-section {
+    padding: 110px 0;
+  }
+
+  .quote-section blockquote {
+    font-size: 36px;
+  }
+
+  .deployment-section {
+    padding: 110px 0 140px 0;
+  }
+
+  .deployment-section h2 {
+    font-size: 38px;
+  }
+
+  .deployment-section p {
+    font-size: 17px;
+  }
+
+  .giant-footer-brand-svg {
+    height: 26vw;
+  }
+}
+
+/* ---------- Small tablets / large phones (<=768px) ---------- */
+@media (max-width: 768px) {
+  .section-container,
+  .features-section .section-container,
+  .footer-container {
+    padding: 0 24px;
+  }
+
+  .site-header {
+    padding: 24px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  h1 { font-size: 44px; }
+
+  .hero-content {
+    padding: 0 16px;
+  }
+
+  .hero-content h1 {
+    font-size: 38px;
+    letter-spacing: -1px;
+  }
+
+  .hero-content h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .hero-lead {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .hero-content h4 {
+    font-size: 12px;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+  }
+
+  .hero-content .cta-btn {
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+
+  .bg-svg-wrapper {
+    width: 480px;
+    height: 480px;
+  }
+
+  .philosophy-section h2,
+  .deployment-section h2 {
+    font-size: 30px;
+    letter-spacing: -1px;
+  }
+
+  .philosophy-content p {
+    font-size: 16px;
+  }
+
+  .features-section h2 {
+    font-size: 30px;
+    margin-bottom: 32px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .feature-card {
+    aspect-ratio: auto;
+    min-height: 180px;
+  }
+
+  .quote-section {
+    padding: 80px 0;
+  }
+
+  .quote-section blockquote {
+    font-size: 26px;
+    padding: 0 8px;
+  }
+
+  .deployment-section {
+    padding: 80px 0 100px 0;
+  }
+
+  .deployment-section p {
+    font-size: 16px;
+    margin-bottom: 36px;
+  }
+
+  .site-footer {
+    min-height: 320px;
+    padding-top: 70px;
+  }
+
+  .site-footer h2 {
+    font-size: 28px;
+  }
+
+  .footer-btn {
+    padding: 12px 32px;
+    font-size: 14px;
+  }
+
+  .giant-footer-brand-svg {
+    height: 34vw;
+  }
+
+  .giant-footer-brand-svg svg {
+    margin-bottom: -5vw; /* Adjusts the cropping offset slightly for smaller viewports */
+  }
+}
+
+/* ---------- Phones (<=480px) ---------- */
+@media (max-width: 480px) {
+  .logo-img {
+    height: 22px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .meta-text {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .eyebrow-text {
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+
+  .hero-container {
+    min-height: 60vh;
+    padding: 40px 16px;
+  }
+
+  .hero-content h1 {
+    font-size: 30px;
+  }
+
+  .hero-content h3 {
+    font-size: 17px;
+  }
+
+  .hero-lead {
+    font-size: 15px;
+  }
+
+  .hero-content .cta-btn {
+    width: 100%;
+    padding: 14px 20px;
+  }
+
+  .bg-svg-wrapper {
+    width: 340px;
+    height: 340px;
+  }
+
+  .philosophy-section {
+    padding: 70px 0;
+  }
+
+  .philosophy-section h2,
+  .deployment-section h2 {
+    font-size: 26px;
+  }
+
+  .terrain-valley-3d,
+  .terrain-wireframe {
+    max-width: 100%;
+  }
+
+  .features-section {
+    padding: 60px 0;
+  }
+
+  .features-section h2 {
+    font-size: 26px;
+  }
+
+  .feature-card {
+    padding: 22px 18px 18px 18px;
+    min-height: 160px;
+  }
+
+  .wireframe-graphic {
+    width: 72px;
+    height: 72px;
+  }
+
+  .feature-card h3 {
+    font-size: 19px;
+  }
+
+  .quote-section blockquote {
+    font-size: 21px;
+  }
+
+  .deployment-section {
+    padding: 60px 0 80px 0;
+  }
+
+  .deployment-section p {
+    font-size: 15px;
+  }
+
+  .site-footer h2 {
+    font-size: 22px;
+    padding: 0 12px;
+  }
+
+  .footer-btn {
+    width: calc(100% - 48px);
+  }
+
+  .giant-footer-brand-svg {
+    height: 44vw;
+  }
 }
