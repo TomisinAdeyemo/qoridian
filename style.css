@@ -14,10 +14,10 @@
     #0C1326 60%, 
     #000000 100%
   );
-  --text-primary: #ffffff;
+  --text-primary: #DFF1DA;
   --text-muted: #b7c4d2;
   --text-eyebrow: #7f8fa0;
-  --accent-green: #;
+  --accent-green: #5DB847;
   --card-bg: rgba(255, 255, 255, 0.08);
   --card-border: rgba(255, 255, 255, 0.07);
   --grid-color: rgba(255, 255, 255, 0.015);
@@ -180,7 +180,7 @@ body {
   line-height: 1.15;
   letter-spacing: -1.5px;
   margin-bottom: 20px; /* Snug distance to the supporting subheadline */
-  color: #ffffff;
+  color: #DFF1DA;
 }
 
 /* Rich Green Accent Branding Word */
