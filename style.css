@@ -2310,6 +2310,8 @@ span:last-child {
   padding: 120px 0;
 
   overflow: hidden;
+
+  margin-top: -100px;
 }
 
 
@@ -2369,11 +2371,13 @@ span:last-child {
 
 
 .stat-number {
+ font-family: "Azeret Mono", monospace;
+ font-weight: 200;
   font-size:
     clamp(
-      130px,
-      14vw,
-      220px
+      100px,
+      12vw,
+      150px
     );
 
   /*
@@ -6610,6 +6614,7 @@ filter: brightness(1.12);
 
 .cta-section {
   position: relative;
+  isolation: isolate;
 
   width: 100%;
   min-height: 560px;
@@ -6620,6 +6625,9 @@ filter: brightness(1.12);
 
   overflow: hidden;
 
+  /*
+    Same base tone as the rest of the website.
+  */
   background: #03070a;
 }
 
@@ -6639,11 +6647,40 @@ filter: brightness(1.12);
   object-fit: cover;
   object-position: center;
 
-  z-index: 0;
+  z-index: -2;
+
+  /*
+    This is the important part.
+
+    The video becomes much quieter and closer
+    to the site's existing visual language.
+  */
+
+  opacity: 0.48;
+
+  filter:
+    brightness(0.42)
+    contrast(0.78)
+    saturate(0.55);
 
   pointer-events: none;
-}
 
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 35%,
+      rgba(0, 0, 0, 0.85) 65%,
+      transparent 100%
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black 35%,
+      rgba(0, 0, 0, 0.85) 65%,
+      transparent 100%
+    );
+}
 
 /* =====================================================
    VIDEO OVERLAY
@@ -6654,17 +6691,39 @@ filter: brightness(1.12);
 
   inset: 0;
 
-  z-index: 1;
-
-  /*
-    Keeps the video visible while making
-    the text readable.
-  */
-
-  background:
-    rgba(2, 7, 5, 0.42);
+  z-index: -1;
 
   pointer-events: none;
+
+  /*
+    Dark green-black base over the video.
+  */
+
+background:
+  linear-gradient(
+    rgba(5, 10, 18, 0.56),
+    rgba(5, 10, 18, 0.56)
+  );
+}
+
+
+.cta-section::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: -1;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(35, 105, 38, 0.08) 0%,
+      rgba(3, 7, 10, 0) 55%
+    );
 }
 
 
@@ -6967,6 +7026,27 @@ filter: brightness(1.12);
     min-width: 180px;
 
     height: 43px;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .cta-background-video {
+    opacity: 0.38;
+
+    filter:
+      brightness(0.38)
+      contrast(0.75)
+      saturate(0.5);
+
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .cta-video-overlay {
+    background:
+      rgba(3, 9, 7, 0.62);
   }
 
 }
@@ -7717,3 +7797,5 @@ filter: brightness(1.12);
 
   vertical-align: baseline;
 }
+
+
