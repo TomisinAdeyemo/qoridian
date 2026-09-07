@@ -1,1366 +1,455 @@
-const squareField =
-  document.getElementById(
-    "globalSquareField"
-  );
-
-const parallaxElements =
-  document.querySelectorAll(
-    "[data-parallax]"
-  );
-
-const menuToggle =
-  document.querySelector(
-    ".menu-toggle"
-  );
-
-const mobileMenu =
-  document.querySelector(
-    ".mobile-menu"
-  );
-
-const reduceMotion =
-  window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  );
-
-const mobileQuery =
-  window.matchMedia(
-    "(max-width: 560px)"
-  );
-
-
-/* =====================================================
-   GLOBAL FLOATING SQUARES
-===================================================== */
-
-function createSquareField() {
-
-  squareField.innerHTML = "";
-
-
-  const width =
-    window.innerWidth;
-
-
-  /*
-    Responsive density.
-  */
-
-  const count =
-    width <= 560
-      ? 125
-      : width <= 900
-        ? 180
-        : 270;
-
-
-  const fragment =
-    document.createDocumentFragment();
-
-
-  for (
-    let i = 0;
-    i < count;
-    i++
-  ) {
-
-    const square =
-      document.createElement(
-        "span"
-      );
-
-
-    square.className =
-      "square";
-
-
-    /*
-      Small square dimensions.
-    */
-
-    const size =
-      2 +
-      Math.random() * 4;
-
-
-    /*
-      Random position.
-    */
-
-    const x =
-      Math.random() * 100;
-
-    const y =
-      Math.random() * 100;
-
-
-    /*
-      Faster movement.
-    */
-
-    const duration =
-      4.5 +
-      Math.random() * 7;
-
-
-    const delay =
-      -(Math.random() * 10);
-
-
-    /*
-      Movement distance.
-    */
-
-    const moveX =
-      (
-        Math.random() -
-        0.5
-      ) * 70;
-
-
-    const moveY =
-      (
-        Math.random() -
-        0.5
-      ) * 70;
-
-
-    /*
-      Increased visibility.
-    */
-
-    const opacity =
-      0.07 +
-      Math.random() * 0.18;
-
-
-    const pulse =
-      2.8 +
-      Math.random() * 4;
-
-
-    square.style.setProperty(
-      "--size",
-      `${size}px`
-    );
-
-
-    square.style.setProperty(
-      "--x",
-      `${x}%`
-    );
-
-
-    square.style.setProperty(
-      "--y",
-      `${y}%`
-    );
-
-
-    square.style.setProperty(
-      "--duration",
-      `${duration}s`
-    );
-
-
-    square.style.setProperty(
-      "--delay",
-      `${delay}s`
-    );
-
-
-    square.style.setProperty(
-      "--move-x",
-      `${moveX}px`
-    );
-
-
-    square.style.setProperty(
-      "--move-y",
-      `${moveY}px`
-    );
-
-
-    square.style.setProperty(
-      "--opacity",
-      opacity
-    );
-
-
-    square.style.setProperty(
-      "--pulse",
-      `${pulse}s`
-    );
-
-
-    /*
-      A small percentage of squares
-      use different tones.
-    */
-
-    const variant =
-      Math.random();
-
-
-    if (variant > 0.94) {
-
-      square.classList.add(
-        "cool"
-      );
-
-
-      square.style.setProperty(
-        "--cool-opacity",
-        0.04 +
-        Math.random() * 0.09
-      );
-
-    }
-
-
-    else if (variant > 0.78) {
-
-      square.classList.add(
-        "soft"
-      );
-
-
-      square.style.setProperty(
-        "--soft-opacity",
-        0.04 +
-        Math.random() * 0.12
-      );
-
-    }
-
-
-    fragment.appendChild(
-      square
-    );
-
-  }
-
-
-  squareField.appendChild(
-    fragment
-  );
-
+// Mobile Navigation Toggle
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+
+hamburger.addEventListener('click', () => {
+  navLinks.classList.toggle('active');
+});
+
+// Expanded Interactive Node Canvas Setup
+const canvas = document.getElementById('nodeGrid');
+const ctx = canvas.getContext('2d');
+
+const cols = 22;             // Increased grid columns
+const rows = 15;             // Increased grid rows
+const spacing = 30;          // Increased node spacing
+const baseDotSize = 3.5;
+const activeSize = 8;       // Expanded active square size
+const influenceRadius = 110; // Expanded interaction radius
+
+canvas.width = cols * spacing;
+canvas.height = rows * spacing;
+
+let mouseX = canvas.width / 2;
+let mouseY = canvas.height / 2;
+let currentX = canvas.width / 2;
+let currentY = canvas.height / 2;
+let isHovered = false;
+
+// Handle Mouse & Touch Inputs dynamically
+function updatePointerPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+  mouseX = (clientX - rect.left) * scaleX;
+  mouseY = (clientY - rect.top) * scaleY;
+  isHovered = true;
 }
 
+canvas.addEventListener('mousemove', updatePointerPos);
+canvas.addEventListener('touchmove', updatePointerPos, { passive: true });
 
-createSquareField();
+canvas.addEventListener('mouseleave', () => { isHovered = false; });
+canvas.addEventListener('touchend', () => { isHovered = false; });
 
+// Continuous 60fps Smooth Animation Loop
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-/* =====================================================
-   PARALLAX ENGINE
-===================================================== */
+  const targetX = isHovered ? mouseX : canvas.width / 2;
+  const targetY = isHovered ? mouseY : canvas.height / 2;
 
-let targetScroll =
-  window.scrollY;
+  // Smooth Lerp Easing (0.1)
+  currentX += (targetX - currentX) * 0.1;
+  currentY += (targetY - currentY) * 0.1;
 
-let currentScroll =
-  window.scrollY;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = c * spacing + spacing / 2;
+      const y = r * spacing + spacing / 2;
 
+      const dist = Math.hypot(x - currentX, y - currentY);
 
-window.addEventListener(
-  "scroll",
-  () => {
+      if (dist < 15) {
+        // Active Highlight Node with Glow
+        ctx.fillStyle = '#5DB847';
+        ctx.shadowColor = 'rgba(34, 197, 94, 0.8)';
+        ctx.shadowBlur = 5;
+        ctx.fillRect(x - activeSize / 2, y - activeSize / 2, activeSize, activeSize);
+        ctx.shadowBlur = 0;
+      } else if (dist < influenceRadius) {
+        // Dynamic Proximity Glow Effect
+        const factor = 1 - dist / influenceRadius;
+        const dynamicSize = baseDotSize + factor * 3;
 
-    targetScroll =
-      window.scrollY;
-
-  },
-  {
-    passive: true
-  }
-);
-
-
-function animateSite() {
-
-  if (!reduceMotion.matches) {
-
-
-    /*
-      Smooth scroll interpolation.
-    */
-
-    currentScroll +=
-      (
-        targetScroll -
-        currentScroll
-      ) * 0.075;
-
-
-    /*
-      GLOBAL BACKGROUND PARALLAX
-
-      Very subtle because the background
-      is supposed to feel like one continuous
-      environment.
-    */
-
-    const backgroundOffset =
-      currentScroll * 0.018;
-
-
-    squareField.style.transform =
-      `translate3d(
-        0,
-        ${-backgroundOffset}px,
-        0
-      )`;
-
-
-    /*
-      Mobile gets approximately 38%
-      of desktop parallax intensity.
-    */
-
-    const multiplier =
-      mobileQuery.matches
-        ? 0.38
-        : 1;
-
-
-    /*
-      Every element with
-      data-parallax participates.
-    */
-
-    parallaxElements.forEach(
-      (element) => {
-
-        const speed =
-          (
-            parseFloat(
-              element.dataset.parallax
-            ) || 0
-          ) * multiplier;
-
-
-        const rect =
-          element.getBoundingClientRect();
-
-
-        const elementCenter =
-          rect.top +
-          rect.height / 2;
-
-
-        const viewportCenter =
-          window.innerHeight / 2;
-
-
-        const distance =
-          elementCenter -
-          viewportCenter;
-
-
-        const offset =
-          distance * speed;
-
-
-        element.style.transform =
-          `translate3d(
-            0,
-            ${offset}px,
-            0
-          )`;
-
+        ctx.fillStyle = `rgba(34, 197, 94, ${0.25 + factor * 0.55})`;
+        ctx.fillRect(x - dynamicSize / 2, y - dynamicSize / 2, dynamicSize, dynamicSize);
+      } else {
+        // Standard Muted Node
+        ctx.fillStyle = '#BABABA';
+        ctx.fillRect(x - baseDotSize / 2, y - baseDotSize / 2, baseDotSize, baseDotSize);
       }
-    );
-
+    }
   }
 
-
-  requestAnimationFrame(
-    animateSite
-  );
-
+  requestAnimationFrame(animate);
 }
 
+animate();
 
-animateSite();
+// Scroll Reveal Observer for all sections
+const sections = document.querySelectorAll('section');
 
+const revealOptions = {
+  root: null,
+  threshold: 0.1, // Triggers earlier as soon as 10% enters the viewport
+  rootMargin: '0px 0px -100px 0px'
+};
 
-/* =====================================================
-   MOBILE MENU
-===================================================== */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+    } else {
+      entry.target.classList.remove('in-view');
+    }
+  });
+}, revealOptions);
 
-function closeMenu() {
+sections.forEach(section => {
+  revealObserver.observe(section);
+});
 
-  menuToggle.classList.remove(
-    "active"
-  );
+// Ambient Moving Nodes Background Setup
+const bgCanvas = document.getElementById('bgNodesCanvas');
+const bgCtx = bgCanvas.getContext('2d');
 
-  mobileMenu.classList.remove(
-    "open"
-  );
+let bgWidth = (bgCanvas.width = window.innerWidth);
+let bgHeight = (bgCanvas.height = window.innerHeight);
 
-  menuToggle.setAttribute(
-    "aria-expanded",
-    "false"
-  );
+window.addEventListener('resize', () => {
+  bgWidth = bgCanvas.width = window.innerWidth;
+  bgHeight = bgCanvas.height = window.innerHeight;
+});
 
-  mobileMenu.setAttribute(
-    "aria-hidden",
-    "true"
-  );
+// Increased count and enhanced visibility configuration
+const particleCount = 50;
+const particles = [];
 
-  document.body.classList.remove(
-    "menu-open"
-  );
+class AmbientNode {
+  constructor() {
+    this.x = Math.random() * bgWidth;
+    this.y = Math.random() * bgHeight;
+    this.size = Math.random() * 2.5 + 2.5;
+    
+    // Reduced speed for a smoother, slower drift
+    this.speedY = Math.random() * 0.01 + 0.01;      // Slower vertical movement
+    this.amplitude = Math.random() * 0.1 + 0.1;    // Gentler zig-zag sway
+    this.frequency = Math.random() * 0.012 + 0.004; // Slower oscillation wave
+    this.step = Math.random() * 100;
+    
+    this.opacity = Math.random() * 0.35 + 0.25;
+  }
 
+  update() {
+    this.step += this.frequency;
+    this.x += Math.sin(this.step) * this.amplitude;
+    this.y -= this.speedY;
+
+    if (this.y < -15) {
+      this.y = bgHeight + 15;
+      this.x = Math.random() * bgWidth;
+    }
+  }
+
+  draw() {
+    bgCtx.fillStyle = `rgba(34, 197, 94, ${this.opacity})`;
+    bgCtx.shadowColor = 'rgba(9, 73, 33, 0.4)';
+    bgCtx.shadowBlur = 10;
+    bgCtx.fillRect(this.x, this.y, this.size, this.size);
+    bgCtx.shadowBlur = 0;
+  }
 }
 
+for (let i = 0; i < particleCount; i++) {
+  particles.push(new AmbientNode());
+}
 
-menuToggle.addEventListener(
-  "click",
-  () => {
+function animateBgNodes() {
+  bgCtx.clearRect(0, 0, bgWidth, bgHeight);
 
-    const isOpen =
-      mobileMenu.classList.toggle(
-        "open"
-      );
-
-
-    menuToggle.classList.toggle(
-      "active",
-      isOpen
-    );
-
-
-    menuToggle.setAttribute(
-      "aria-expanded",
-      String(isOpen)
-    );
-
-
-    mobileMenu.setAttribute(
-      "aria-hidden",
-      String(!isOpen)
-    );
-
-
-    document.body.classList.toggle(
-      "menu-open",
-      isOpen
-    );
-
-  }
-);
-
-
-mobileMenu
-  .querySelectorAll("a")
-  .forEach(
-    (link) => {
-
-      link.addEventListener(
-        "click",
-        closeMenu
-      );
-
-    }
-  );
-
-
-/* =====================================================
-   RESPONSIVE SQUARE DENSITY
-===================================================== */
-
-let previousMobileState =
-  mobileQuery.matches;
-
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    const currentMobileState =
-      mobileQuery.matches;
-
-
-    if (
-      currentMobileState !==
-      previousMobileState
-    ) {
-
-      previousMobileState =
-        currentMobileState;
-
-      createSquareField();
-
-    }
-
-
-    if (
-      window.innerWidth > 820
-    ) {
-
-      closeMenu();
-
-    }
-
-  }
-);
-
-/* =====================================================
-   LIVING SYSTEM NETWORK
-===================================================== */
-
-const systemMap =
-  document.querySelector(".system-map");
-
-if (systemMap) {
-
-  const nodeElements =
-    [...systemMap.querySelectorAll(".system-node")];
-
-  const nodeMap = {};
-
-  nodeElements.forEach((node) => {
-
-    nodeMap[
-      node.dataset.node
-    ] = node;
-
+  particles.forEach(node => {
+    node.update();
+    node.draw();
   });
 
+  requestAnimationFrame(animateBgNodes);
+}
 
-  const connections =
-    [...systemMap.querySelectorAll("line")].map(
-      (line) => {
-
-        const [
-          from,
-          to
-        ] =
-          line.dataset.connect.split(" ");
-
-        return {
-          line,
-          from,
-          to
-        };
-
-      }
-    );
+animateBgNodes();
 
 
-  /*
-    Each object has its own motion personality.
+// --- 1. Text Scramble Decoding Effect ---
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
 
-    The movement is intentionally small.
-    We don't want these to look like floating
-    UI cards. They should feel connected.
-  */
+function decodeText(element) {
+  const originalText = element.getAttribute('data-decode');
+  let iteration = 0;
+  clearInterval(element.decodeInterval);
 
-  const motion = {
+  element.decodeInterval = setInterval(() => {
+    element.innerText = originalText
+      .split('')
+      .map((char, index) => {
+        if (index < iteration) return originalText[index];
+        if (char === ' ') return ' ';
+        return chars[Math.floor(Math.random() * chars.length)];
+      })
+      .join('');
 
-    supply: {
-      x: 9,
-      y: 6,
-      speed: 0.00055,
-      phase: 0.4
-    },
-
-    demand: {
-      x: -7,
-      y: 8,
-      speed: 0.00048,
-      phase: 1.8
-    },
-
-    competing: {
-      x: 8,
-      y: -6,
-      speed: 0.00062,
-      phase: 2.6
-    },
-
-    infrastructure: {
-      x: -8,
-      y: -5,
-      speed: 0.00053,
-      phase: 0.9
-    },
-
-    population: {
-      x: 6,
-      y: 8,
-      speed: 0.00044,
-      phase: 3.1
-    },
-
-    climate: {
-      x: -7,
-      y: 6,
-      speed: 0.00058,
-      phase: 4.2
+    if (iteration >= originalText.length) {
+      clearInterval(element.decodeInterval);
     }
+    iteration += 1 / 2; // Decoding speed
+  }, 30);
+}
 
+// Trigger decode when section is scrolled into view
+const decodeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const tag = entry.target.querySelector('.section-tag');
+      if (tag) decodeText(tag);
+    }
+  });
+}, { threshold: 0.3 });
+
+const propSection = document.querySelector('.proposition-section');
+if (propSection) decodeObserver.observe(propSection);
+
+
+// --- 2. Floating Connected Network Node Diagram ---
+const netCanvas = document.getElementById('networkCanvas');
+const netCtx = netCanvas.getContext('2d');
+
+netCanvas.width = 560;
+netCanvas.height = 400;
+
+// Central Hub Node
+const centralHub = { x: 380, y: 220, baseSize: 12 };
+
+// Satellite Floating Label Nodes
+const labels = ['SUPPLY', 'DEMAND', 'COMPETING USES', 'INFRASTRUCTURE', 'POPULATION', 'CLIMATE'];
+const satellites = [
+  { label: 'SUPPLY', x: 200, y: 70, ox: 200, oy: 70, phase: 0 },
+  { label: 'DEMAND', x: 360, y: 100, ox: 360, oy: 100, phase: 1.2 },
+  { label: 'COMPETING USES', x: 140, y: 190, ox: 140, oy: 190, phase: 2.4 },
+  { label: 'INFRASTRUCTURE', x: 420, y: 190, ox: 420, oy: 190, phase: 3.6 },
+  { label: 'POPULATION', x: 220, y: 300, ox: 220, oy: 300, phase: 4.8 },
+  { label: 'CLIMATE', x: 380, y: 350, ox: 380, oy: 350, phase: 6.0 }
+];
+
+let netMouseX = centralHub.x;
+let netMouseY = centralHub.y;
+let netHovered = false;
+
+netCanvas.addEventListener('mousemove', (e) => {
+  const rect = netCanvas.getBoundingClientRect();
+  netMouseX = (e.clientX - rect.left) * (netCanvas.width / rect.width);
+  netMouseY = (e.clientY - rect.top) * (netCanvas.height / rect.height);
+  netHovered = true;
+});
+
+netCanvas.addEventListener('mouseleave', () => { netHovered = false; });
+
+let time = 0;
+
+function animateNetwork() {
+  netCtx.clearRect(0, 0, netCanvas.width, netCanvas.height);
+  time += 0.02;
+
+  // Interactively pull Central Hub toward cursor on hover
+  const targetX = netHovered ? netMouseX : 380;
+  const targetY = netHovered ? netMouseY : 220;
+  centralHub.x += (targetX - centralHub.x) * 0.08;
+  centralHub.y += (targetY - centralHub.y) * 0.08;
+
+  // Draw Central Green Node
+  netCtx.fillStyle = '#22c55e';
+  netCtx.shadowColor = 'rgba(34, 197, 94, 0.8)';
+  netCtx.shadowBlur = 10;
+  netCtx.fillRect(centralHub.x - 5, centralHub.y - 5, 10, 10);
+  netCtx.shadowBlur = 0;
+
+  // Update & Draw Floating Satellite Nodes
+  satellites.forEach(sat => {
+    // Gentle floating oscillation
+    sat.x = sat.ox + Math.sin(time + sat.phase) * 12;
+    sat.y = sat.oy + Math.cos(time * 0.8 + sat.phase) * 10;
+
+    // Connect Lines between Satellites and Central Hub
+    netCtx.beginPath();
+    netCtx.moveTo(sat.x, sat.y);
+    netCtx.lineTo(centralHub.x, centralHub.y);
+    netCtx.strokeStyle = 'rgba(34, 197, 94, 0.35)';
+    netCtx.lineWidth = 1;
+    netCtx.stroke();
+
+    // Connection Dot at box edge
+    netCtx.fillStyle = '#22c55e';
+    netCtx.fillRect(sat.x - 2, sat.y - 2, 4, 4);
+
+    // Draw Box Enclosure
+    netCtx.font = '11px "Fira Code", monospace';
+    const textWidth = netCtx.measureText(sat.label).width;
+    const paddingX = 12;
+    const paddingY = 6;
+    const boxWidth = textWidth + paddingX * 2;
+    const boxHeight = 24;
+    const boxX = sat.x - boxWidth / 2;
+    const boxY = sat.y - boxHeight / 2;
+
+    netCtx.fillStyle = 'rgba(3, 7, 18, 0.85)';
+    netCtx.strokeStyle = '#1e293b';
+    netCtx.lineWidth = 1;
+    netCtx.fillRect(boxX, boxY, boxWidth, boxHeight);
+    netCtx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+
+    // Corner bracket markers
+    netCtx.fillStyle = '#475569';
+    netCtx.fillRect(boxX - 1, boxY - 1, 3, 3);
+    netCtx.fillRect(boxX + boxWidth - 2, boxY + boxHeight - 2, 3, 3);
+
+    // Label Text
+    netCtx.fillStyle = '#22c55e';
+    netCtx.textAlign = 'center';
+    netCtx.textBaseline = 'middle';
+    netCtx.fillText(sat.label, sat.x, sat.y);
+  });
+
+  requestAnimationFrame(animateNetwork);
+}
+
+animateNetwork();
+
+
+// --- Single-Run Counter Animation on Viewport Entry ---
+const counterElement = document.getElementById('counter');
+
+function animateCounterOnce(element, target, duration = 2200) {
+  let startTimestamp = null;
+
+  const step = (timestamp) => {
+    if (!element._isVisible) return; // Pause frame if scrolled out
+
+    if (!startTimestamp) startTimestamp = timestamp;
+    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+    
+    // Smooth ease-out cubic curve
+    const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+    const currentCount = Math.floor(easeOutProgress * target);
+    
+    element.innerText = currentCount;
+
+    if (progress < 1) {
+      element._animId = window.requestAnimationFrame(step);
+    } else {
+      element.innerText = target; // Lock to exact target value
+    }
   };
 
-
-  /*
-    Keep the original CSS position.
-
-    The animation only adds a small offset
-    on top of the responsive layout.
-  */
-
-  function getNodeCenter(node) {
-
-    const mapRect =
-      systemMap.getBoundingClientRect();
-
-    const nodeRect =
-      node.getBoundingClientRect();
-
-    return {
-
-      x:
-        nodeRect.left -
-        mapRect.left +
-        nodeRect.width / 2,
-
-      y:
-        nodeRect.top -
-        mapRect.top +
-        nodeRect.height / 2
-
-    };
-
-  }
-
-
-  /*
-    SVG connection point creator.
-  */
-
-  const pointsGroup =
-    systemMap.querySelector(
-      ".connection-points"
-    );
-
-
-  function addConnectionPoint(
-    x,
-    y
-  ) {
-
-    const point =
-      document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "rect"
-      );
-
-
-    point.classList.add(
-      "connection-point"
-    );
-
-
-    point.setAttribute(
-      "width",
-      "5"
-    );
-
-
-    point.setAttribute(
-      "height",
-      "5"
-    );
-
-
-    point.setAttribute(
-      "x",
-      x - 2.5
-    );
-
-
-    point.setAttribute(
-      "y",
-      y - 2.5
-    );
-
-
-    pointsGroup.appendChild(
-      point
-    );
-
-  }
-
-
-  /*
-    Main network animation.
-  */
-
-  function animateNetwork(
-    timestamp
-  ) {
-
-    if (
-      !reduceMotion.matches
-    ) {
-
-      /*
-        Move each node independently.
-      */
-
-      Object.entries(
-        motion
-      ).forEach(
-        ([
-          name,
-          settings
-        ]) => {
-
-          const node =
-            nodeMap[name];
-
-
-          if (!node) {
-            return;
-          }
-
-
-          /*
-            Different sine/cosine movement
-            makes the system feel organic.
-          */
-
-          const x =
-            Math.sin(
-              timestamp *
-              settings.speed +
-              settings.phase
-            ) *
-            settings.x;
-
-
-          const y =
-            Math.cos(
-              timestamp *
-              settings.speed * 0.87 +
-              settings.phase
-            ) *
-            settings.y;
-
-
-          /*
-            Keep the node's responsive CSS
-            position untouched.
-          */
-
-          node.style.transform =
-            `translate3d(
-              ${x}px,
-              ${y}px,
-              0
-            )`;
-
-        }
-      );
-
-    }
-
-
-    /*
-      Now update every string.
-
-      Because this happens after the nodes
-      move, the lines always point to them.
-    */
-
-    connections.forEach(
-      ({
-        line,
-        from,
-        to
-      }) => {
-
-        const fromCenter =
-          getNodeCenter(
-            nodeMap[from]
-          );
-
-        const toCenter =
-          getNodeCenter(
-            nodeMap[to]
-          );
-
-
-        line.setAttribute(
-          "x1",
-          fromCenter.x
-        );
-
-
-        line.setAttribute(
-          "y1",
-          fromCenter.y
-        );
-
-
-        line.setAttribute(
-          "x2",
-          toCenter.x
-        );
-
-
-        line.setAttribute(
-          "y2",
-          toCenter.y
-        );
-
-      }
-    );
-
-
-    requestAnimationFrame(
-      animateNetwork
-    );
-
-  }
-
-
-  requestAnimationFrame(
-    animateNetwork
-  );
-
+  window.cancelAnimationFrame(element._animId);
+  element._animId = window.requestAnimationFrame(step);
 }
 
-/* =====================================================
-   ONE-WAY SCROLL-DRIVEN INTELLIGENCE COUNTER
-===================================================== */
+// Observer to fire counting animation once on enter, reset on leave
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!counterElement) return;
 
-const statSection =
-  document.querySelector(".intelligence-stat-section");
-
-const intelligenceCounter =
-  document.getElementById("intelligenceCounter");
-
-if (statSection && intelligenceCounter) {
-
-  const MAX_VALUE = 2000;
-
-  let displayedValue = 0;
-  let targetValue = 0;
-
-  /*
-    Once this becomes true, the counter
-    will permanently remain at 2000.
-  */
-  let counterLocked = false;
-
-
-  function updateCounter() {
-
-    /*
-      Once 2000 has been reached,
-      completely stop responding to scroll.
-    */
-    if (counterLocked) {
-      targetValue = MAX_VALUE;
-      return;
+    if (entry.isIntersecting) {
+      if (!counterElement._isVisible) {
+        counterElement._isVisible = true;
+        const target = parseInt(counterElement.getAttribute('data-target'), 10) || 2000;
+        animateCounterOnce(counterElement, target);
+      }
+    } else {
+      // Reset state when scrolled completely off-screen
+      counterElement._isVisible = false;
+      window.cancelAnimationFrame(counterElement._animId);
+      counterElement.innerText = "0";
     }
+  });
+}, { threshold: 0.3 });
 
-
-    const rect =
-      statSection.getBoundingClientRect();
-
-    const viewportHeight =
-      window.innerHeight;
-
-
-    const start =
-      viewportHeight * 0.85;
-
-    const end =
-      -rect.height * 0.15;
-
-
-    const distance =
-      start - end;
-
-
-    const progress =
-      (start - rect.top) /
-      distance;
-
-
-    const normalized =
-      Math.max(
-        0,
-        Math.min(
-          1,
-          progress
-        )
-      );
-
-
-    /*
-      Smooth easing.
-    */
-    const eased =
-      normalized *
-      normalized *
-      (3 - 2 * normalized);
-
-
-    targetValue =
-      Math.round(
-        eased * MAX_VALUE
-      );
-
-
-    /*
-      Lock permanently once the counter
-      reaches the maximum.
-    */
-    if (targetValue >= MAX_VALUE) {
-
-      targetValue =
-        MAX_VALUE;
-
-      counterLocked =
-        true;
-
-    }
-
-  }
-
-
-  function animateCounter() {
-
-    /*
-      If locked, don't interpolate anymore.
-      Just keep the number at 2000.
-    */
-    if (counterLocked) {
-
-      displayedValue =
-        MAX_VALUE;
-
-      intelligenceCounter.textContent =
-        "2,000";
-
-      return;
-    }
-
-
-    displayedValue +=
-      (
-        targetValue -
-        displayedValue
-      ) * 0.12;
-
-
-    const roundedValue =
-      Math.round(
-        displayedValue
-      );
-
-
-    intelligenceCounter.textContent =
-      roundedValue.toLocaleString();
-
-
-    requestAnimationFrame(
-      animateCounter
-    );
-
-  }
-
-
-  window.addEventListener(
-    "scroll",
-    updateCounter,
-    {
-      passive: true
-    }
-  );
-
-
-  window.addEventListener(
-    "resize",
-    updateCounter
-  );
-
-
-  updateCounter();
-
-  animateCounter();
-
+const statsSection = document.querySelector('.stats-section');
+if (statsSection && counterElement) {
+  statsObserver.observe(statsSection);
 }
 
-/* =====================================================
-   METHOD INTERACTIVE PANELS
-===================================================== */
-
-const methodPanels =
-  document.querySelectorAll(
-    ".method-panel"
-  );
-
-
-methodPanels.forEach(
-  (panel) => {
-
-    const trigger =
-      panel.querySelector(
-        ".method-panel-trigger"
-      );
-
-
-    trigger.addEventListener(
-      "click",
-      () => {
-
-        /*
-          If already active, don't collapse it.
-
-          This guarantees there is always
-          one open panel.
-        */
-
-        if (
-          panel.classList.contains(
-            "active"
-          )
-        ) {
-          return;
-        }
-
-
-        /*
-          Close every other panel.
-        */
-
-        methodPanels.forEach(
-          (otherPanel) => {
-
-            const otherTrigger =
-              otherPanel.querySelector(
-                ".method-panel-trigger"
-              );
-
-
-            const isCurrent =
-              otherPanel === panel;
-
-
-            otherPanel.classList.toggle(
-              "active",
-              isCurrent
-            );
-
-
-            otherTrigger.setAttribute(
-              "aria-expanded",
-              String(isCurrent)
-            );
-
-          }
-        );
-
-      }
-    );
-
-  }
-);
-
-
-/* =====================================================
-   QORIDIAN — SCRAMBLE TEXT REVEAL
-===================================================== */
-
-const scrambleCharacters =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&?";
-
-
-function scrambleText(element) {
-
-  const originalText =
-    element.textContent.trim();
-
-  const characters =
-    originalText.split("");
-
-  let resolvedCount = 0;
-
-  /*
-   * Store the original text so we can
-   * progressively reveal it.
-   */
-
-  element.dataset.originalText =
-    originalText;
-
-
-  /*
-   * Start with scrambled characters.
-   */
-
-  function generateScrambledText() {
-
-    return characters
-      .map((character, index) => {
-
-        /*
-         * Keep spaces untouched.
-         */
-
-        if (character === " ") {
-          return " ";
-        }
-
-        /*
-         * Characters before the resolved
-         * point are now locked.
-         */
-
-        if (index < resolvedCount) {
-          return character;
-        }
-
-        /*
-         * Everything else keeps scrambling.
-         */
-
-        return scrambleCharacters[
-          Math.floor(
-            Math.random() *
-            scrambleCharacters.length
-          )
-        ];
-
-      })
-      .join("");
-
-  }
-
-
-  /*
-   * Run the scrambling animation.
-   */
-
-  const interval =
-    setInterval(() => {
-
-      element.textContent =
-        generateScrambledText();
-
-      /*
-       * Resolve one character at a time.
-       */
-
-      resolvedCount++;
-
-
-      /*
-       * Once every character has resolved,
-       * restore the exact original text.
-       */
-
-      if (
-        resolvedCount >
-        characters.length
-      ) {
-
-        clearInterval(interval);
-
-        element.textContent =
-          originalText;
-
-      }
-
-    }, 45);
-
-}
-
-
-/* =====================================================
-   TRIGGER WHEN HEADINGS ENTER VIEW
-===================================================== */
-
-const scrambleElements =
-  document.querySelectorAll(
-    ".scramble-text"
-  );
-
-
-const scrambleObserver =
-  new IntersectionObserver(
-    (entries, observer) => {
-
-      entries.forEach(entry => {
-
-        if (!entry.isIntersecting) {
-          return;
-        }
-
-
-        /*
-         * Don't run the animation again
-         * when the user scrolls back up.
-         */
-
-        if (
-          entry.target.dataset.scrambled === "true"
-        ) {
-          return;
-        }
-
-
-        entry.target.dataset.scrambled =
-          "true";
-
-
-        scrambleText(
-          entry.target
-        );
-
-
-        observer.unobserve(
-          entry.target
-        );
-
-      });
-
-    },
-    {
-      threshold: 0.35
-    }
-  );
-
-
-scrambleElements.forEach(element => {
-
-  scrambleObserver.observe(
-    element
-  );
-
+// --- Method Accordion Toggle Logic ---
+const cards = document.querySelectorAll('.accordion-card');
+
+cards.forEach(card => {
+  card.addEventListener('click', () => {
+    cards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+  });
 });
 
-/* =====================================================
-   QORIDIAN — SECTION LABEL SCRAMBLE
-===================================================== */
+// --- Accordion Canvas Dot Matrix Renderers ---
+const cardCanvases = document.querySelectorAll('.card-canvas');
 
-const labelCharacters =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+cardCanvases.forEach(canvas => {
+  const ctx = canvas.getContext('2d');
+  const shapeType = canvas.getAttribute('data-shape');
+  
+  const cols = 24;
+  const rows = 14;
+  const spacing = 18;
+  const dotSize = 2.5;
 
+  canvas.width = cols * spacing;
+  canvas.height = rows * spacing;
 
-function scrambleLabel(element) {
+  // Render Background Matrix with Shape Highlighting
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = c * spacing + spacing / 2;
+      const y = r * spacing + spacing / 2;
 
-  const original =
-    element.textContent;
+      let isShape = false;
 
-  const characters =
-    original.split("");
+      // Shape Matrix Definitions
+      if (shapeType === '1') {
+        // Question Mark (?) Matrix Shape
+        const topCurve = (r === 2 || r === 3) && (c >= 8 && c <= 15);
+        const leftArch = (r >= 4 && r <= 5) && (c >= 8 && c <= 10);
+        const rightArch = (r >= 4 && r <= 7) && (c >= 13 && c <= 15);
+        const middleHook = (r >= 6 && r <= 8) && (c >= 10 && c <= 13);
+        const stem = (r >= 8 && r <= 10) && (c >= 11 && c <= 12);
+        const dot = (r >= 12 && r <= 13) && (c >= 11 && c <= 12);
 
-  let resolved = 0;
+        if (topCurve || leftArch || rightArch || middleHook || stem || dot) {
+          isShape = true;
+        }
 
-  const interval =
-    setInterval(() => {
-
-      element.textContent =
-        characters
-          .map((char, index) => {
-
-            /* Keep spaces */
-            if (char === " ") {
-              return " ";
-            }
-
-            /* Resolved characters */
-            if (index < resolved) {
-              return char;
-            }
-
-            /* Scrambled characters */
-            return labelCharacters[
-              Math.floor(
-                Math.random() *
-                labelCharacters.length
-              )
-            ];
-
-          })
-          .join("");
-
-      resolved++;
-
-      if (
-        resolved >
-        characters.length
-      ) {
-
-        clearInterval(interval);
-
-        element.textContent =
-          original;
-
+      } else if (shapeType === '2') {
+        // Arch / Hook
+        if ((r >= 2 && r <= 4 && c >= 8 && c <= 15) || (c >= 13 && c <= 15 && r >= 4 && r <= 11) || (c >= 8 && c <= 10 && r >= 4 && r <= 7)) isShape = true;
+      } else if (shapeType === '3') {
+        // Hexagon / Ring Loop
+        if ((r >= 2 && r <= 11 && (c === 7 || c === 8 || c === 15 || c === 16)) || ((r === 2 || r === 3 || r === 10 || r === 11) && c >= 8 && c <= 15)) isShape = true;
+      } else if (shapeType === '4') {
+        // "Q" Glyph Matrix
+        if ((r >= 2 && r <= 10 && (c === 8 || c === 9 || c === 15 || c === 16)) || ((r === 2 || r === 3 || r === 9 || r === 10) && c >= 8 && c <= 16) || (r >= 8 && r <= 12 && c >= 14 && c <= 17)) isShape = true;
       }
 
-    }, 28);
-}
-
-const labelElements =
-  document.querySelectorAll(
-    ".scramble-label-text"
-  );
-
-
-const labelObserver =
-  new IntersectionObserver(
-    (entries, observer) => {
-
-      entries.forEach(entry => {
-
-        if (
-          !entry.isIntersecting
-        ) {
-          return;
-        }
-
-
-        if (
-          entry.target.dataset.scrambled === "true"
-        ) {
-          return;
-        }
-
-
-        entry.target.dataset.scrambled =
-          "true";
-
-
-        scrambleLabel(
-          entry.target
-        );
-
-
-        observer.unobserve(
-          entry.target
-        );
-
-      });
-
-    },
-    {
-      threshold: 0.5
+      if (isShape) {
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+        ctx.shadowBlur = 6;
+        ctx.fillRect(x - 2, y - 2, 4, 4);
+        ctx.shadowBlur = 0;
+      } else {
+        ctx.fillStyle = '#115e2b';
+        ctx.fillRect(x - dotSize / 2, y - dotSize / 2, dotSize, dotSize);
+      }
     }
-  );
-
-
-labelElements.forEach(element => {
-
-  labelObserver.observe(
-    element
-  );
-
+  }
 });
+
