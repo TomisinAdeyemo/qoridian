@@ -1,1052 +1,2243 @@
-/* ==========================================================================
-   1. Reset & Global Variables
-   ========================================================================== */
+:root {
+  --bg-color-1: #000515;
+  --bg-color-2: #07090F;
+  --text-main: #DFF1DA;
+  --text-muted: #BABABA;
+  --accent-green: #5DB847;
+  --accent-green-bg: #dcfce7;
+  --font-heading: 'Inter Tight', sans-serif;
+  --font-body: 'Inter Tight', sans-serif;
+  --font-sub-heading: 'Newsreader', serif;
+  --font-mono: 'Azeret Mono', monospace;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%; /* Prevents iOS from auto-inflating font size on rotate */
-}
-
-:root {
-  --bg-gradient: radial-gradient(
-    circle at 70% 0%,
-    #000000 40%,
-    #0C1326 60%,
-    #000000 100%
-  );
-  --text-primary: #DFF1DA;
-  --text-muted: #b7c4d2;
-  --text-eyebrow: #7f8fa0;
-  --accent-green: #5DB847;
-  --card-bg: rgba(255, 255, 255, 0.08);
-  --card-border: rgba(255, 255, 255, 0.07);
-  --grid-color: rgba(255, 255, 255, 0.015);
-}
-
 body {
-  background: var(--bg-gradient);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--text-primary);
+  background: linear-gradient(-60deg, var(--bg-color-2) 70%, var(--bg-color-1) 100%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: var(--font-heading);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
-  position: relative;
 }
 
-img,
-svg {
-  max-width: 100%;
-  height: auto;
-}
-
-.logo-img {
-  height: 28px;       /* Controls the vertical scaling of the logo */
-  width: auto;        /* Ensures the aspect ratio remains perfectly locked */
-  display: block;     /* Removes baseline spacing quirks */
-  object-fit: contain;
-  margin-top: 50px;
-}
-
-/* Base Utility Layout Container */
-.section-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 40px;
-  position: relative;
-  z-index: 2;
-}
-
-/* Eyebrows used across all sections */
-.eyebrow-text {
-  display: block;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--text-eyebrow);
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-/* ==========================================================================
-   2. Background Grid Matrix (Visible across Desktop - 3.jpg)
-   ========================================================================== */
-.global-grid-matrix {
-  position: absolute;
+/* Fixed Ambient Background Canvas */
+#bgNodesCanvas {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: 120px 120px;
-  background-image:
-    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  z-index: 1;
-  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;          /* Behind all page content */
+  pointer-events: none; /* Allows clicks and scrolling to pass through */
 }
 
 /* ==========================================================================
-   3. Header Navigation
+   Standardized Grid Container System (Pixel-Perfect Alignment across Sections)
    ========================================================================== */
-.site-header {
+.navbar,
+.hero-container,
+.proposition-section,
+.stats-section {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Standardized 2-Column Grid Alignment */
+.hero-container,
+.proposition-section,
+.stats-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 40px 80px;
+  gap: 3rem;
+}
+
+/* Strict Left Column Boundary Lock */
+.hero-content,
+.prop-content,
+.stat-number {
+  width: 100%;
+  max-width: 580px;
+  flex: 1;
+}
+
+/* Strict Right Column Boundary Lock */
+.grid-container,
+.network-container,
+.stat-text {
+  width: 100%;
+  max-width: 560px;
+  flex: 1;
+}
+
+/* ==========================================================================
+   Header Navbar
+   ========================================================================== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
   position: relative;
-  z-index: 10;
-  flex-wrap: wrap;
-  gap: 16px;
+  z-index: 100;
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.meta-text {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--text-eyebrow);
-}
-
-/* ==========================================================================
-   4. Hero Section & Pulsating Animation
-   ========================================================================== */
-.hero-container {
-  min-height: 85vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-  position: relative;
-  padding: 60px 20px;
-
-}
-
-/* Dimming overlay — sits between the background image (z-index: 0) and
-   everything else (bg-svg-wrapper z-index:1, hero-content z-index:2) */
-.hero-container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6); /* Increase toward 0.8 to dim further, lower toward 0.3 to dim less */
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* ==========================================================================
-   Hero Background Logo & Dynamic Brightness Pulse
-   ========================================================================== */
-.bg-svg-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 1600px;
-  height: 1600px;
-  max-width: 150vw;   /* Keeps the glow from ever overflowing a narrow viewport */
-  max-height: 150vw;
-  z-index: 1;
-  pointer-events: none;
-
-  /* Smooth, hardware-accelerated brightness and breathing animation */
-  animation: bg-pulse-container 6s infinite ease-in-out;
-  will-change: transform, opacity, filter; /* Optimizes browser performance */
-}
-
-.hero-logo-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Keyframe matrix handling synchronized scaling, opacity brightness, and glow */
-@keyframes bg-pulse-container {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(0.93);
-    opacity: 0.25; /* Soft, deep resting state background baseline */
-    filter: drop-shadow(0 0 0px rgba(0, 128, 0, 0));
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.05);
-    opacity: 0.95; /* Drives the green lines to near full-strength saturation at peak expansion */
-    filter: drop-shadow(0 0 12px rgba(12, 231, 12, 0.4)); /* Injects a bright green electric glow aura */
-  }
-}
-
-/* ==========================================================================
-   Hero Content Typography & Layout
-   ========================================================================== */
-.hero-content {
-  position: relative;
-  z-index: 2;         /* Keeps the text cleanly layered over the background SVG */
-  max-width: 950px;   /* Prevents long text strings from stretching too wide */
-  width: 100%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-/* Main Display Headline */
-.hero-content h1 {
-  font-size: 68px;
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -1.5px;
-  margin-bottom: 20px; /* Snug distance to the supporting subheadline */
-  color: #DFF1DA;
-  word-wrap: break-word;
-}
-
-/* Rich Green Accent Branding Word */
-.green-text {
-  color: var(--accent-green, #008000);
-}
-
-/* Secondary Subheadline Statement */
-.hero-content h3 {
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: -0.5px;
-  color: #f7fafc; /* Slightly softer white value */
-  margin-bottom: 32px;
-}
-
-/* Body Narrative Context Block */
-.hero-lead {
-  font-size: 22px;
-  line-height: 1.65;
-  color: var(--text-muted, #cbd5e0);
-  max-width: 760px;
-  margin: 0 auto 24px auto; /* Centered layout block */
-  font-weight: 300;
-}
-
-/* Closing Callout Label */
-.hero-content h4 {
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text-eyebrow, #a0aec0);
-  margin-bottom: 48px; /* Breathing room above the Call To Action button */
-}
-
-/* Primary Call To Action Button */
-.hero-content .cta-btn {
-  display: inline-block;
-  background-color: rgba(0, 128, 0, 0.12);
-  color: #ffffff;
-  border: 1px solid rgba(0, 128, 0, 0.4);
-  padding: 14px 36px;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  border-radius: 6px;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.hero-content .cta-btn:hover {
-  background-color: rgba(0, 128, 0, 0.25);
-  border-color: rgba(0, 128, 0, 0.8);
-  box-shadow: 0 0 20px rgba(0, 128, 0, 0.25);
-}
-
-/* ==========================================================================
-   5. Philosophy Section
-   ========================================================================== */
-.philosophy-section {
-  padding: 140px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
-  position: relative;
-}
-
-.philosophy-section .philosophy-layout {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 80px; /* Enhanced separation gap */
-}
-
-/* Constrains your content column to let the graphic breathe on the right */
-.philosophy-text-block {
-  flex: 1.2;
-  max-width: 680px; /* Snug fit to prevent text from colliding with the graphic */
-  min-width: 0; /* Allows flex children to shrink below content size on narrow screens */
-}
-
-.philosophy-section h2 {
-  font-size: 54px;
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -1.5px;
-  margin-bottom: 40px;
-  max-width: 750px;
-}
-
-.philosophy-content {
-  max-width: 760px;
-}
-
-.philosophy-content p {
-  font-size: 18px;
-  line-height: 1.7;
-  color: var(--text-muted);
-  font-weight: 300;
-  margin-bottom: 28px;
-}
-
-.philosophy-content p:last-child {
-  margin-bottom: 0;
-}
-
-/* Let the graphic take up equal weight to support its details */
-.philosophy-graphic-block {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent; /* Strictly no background block container */
-  padding: 0;
-  min-width: 0;
-}
-
-/* Scalable Responsive 3D Valley Vector Elements */
-.terrain-valley-3d {
-  width: 100%;
-  max-width: 620px; /* Significantly increased frame size */
-  height: auto;
-  color: var(--text-muted);
-  opacity: 0.65;
-  transform: rotateX(15deg) rotateY(-8deg); /* Isometric perspective angle match */
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              color 0.5s ease,
-              opacity 0.5s ease;
-}
-
-/* Refined interactive hover logic */
-.philosophy-section:hover .terrain-valley-3d {
-  opacity: 0.95;
-  color: #4ade80; /* Switches cleanly to your brand green color on layout focus */
-  transform: rotateX(11deg) rotateY(-4deg) scale(1.03);
-}
-
-/* Background canvas frame */
-.section-topography-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none; /* Prevents background layer from capturing text highlight/mouse events */
-
-  background-image: url('./map2.svg');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  opacity: 0.12;
-
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
-}
-
-/* Subtle shift animation when interacting with the grid section */
-.features-section:hover .section-topography-bg {
-  transform: scale(1.02);
-  opacity: 0.16;
-}
-
-/* Scalable wireframe settings */
-.terrain-wireframe {
-  width: 100%;
-  max-width: 480px;
-  height: auto;
-  color: rgba(255, 255, 255, 0.35); /* Subtle wireframe default color */
-  filter: drop-shadow(0px 20px 40px rgba(13, 21, 32, 0.6));
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* Micro interaction to give the 3D map spatial reaction when hovered */
-.terrain-wireframe:hover {
-  transform: translateY(-6px) scale(1.02);
-  color: rgba(255, 255, 255, 0.45);
-}
-
-/* ==========================================================================
-   Capabilities Section (What We See Grid)
-   ========================================================================== */
-.features-section {
-  padding: 100px 0;
-  background-color: var(--bg-color);
-  position: relative;
-  z-index: 2;
-}
-
-.features-section .section-container {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 0 40px;
-}
-
-.features-section .eyebrow-text {
+.logo img {
+  height: 20px;
+  width: auto;
   display: block;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--text-eyebrow);
-  font-weight: 600;
-  margin-bottom: 24px;
+  object-fit: contain;
 }
 
-.features-section h2 {
-  color: var(--text-primary);
-  font-size: 48px;
-  font-weight: 500;
-  letter-spacing: -1px;
-  margin-bottom: 48px;
-}
-
-/* 3x2 Grid Array Layout */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-/* Proportioned Balanced Card Housing */
-.feature-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 18px;
-  padding: 28px 24px 24px 24px;
+.nav-links {
   display: flex;
-  flex-direction: column;
-  position: relative;
-  aspect-ratio: 1.6 / 1;
-  min-height: 195px;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-/* Smooth Interactive Glow State */
-.feature-card:hover {
-  border-color: rgba(0, 128, 0, 0.45);
-  background-color: rgba(255, 255, 255, 0.04);
-  transform: translateY(-2px);
-}
-
-.card-num {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  font-size: 18px;
-  font-weight: 400;
-  color: var(--text-primary);
-  opacity: 0.85;
-}
-
-/* Centered Canvas Container for SVG Wireframes */
-.wireframe-container {
-  display: flex;
-  flex: 1;
-  justify-content: center;
+  gap: 2rem;
   align-items: center;
-  margin-top: 5px;
 }
 
-/* Unified Graphic Scaler & Tone Styling */
-.wireframe-graphic {
-  width: 100px;
-  height: 100px;
-  stroke: var(--text-muted);
-  opacity: 0.35;
-  transition: all 0.4s ease;
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
 }
 
-/* Hover effect targets graphic elements instantly */
-.feature-card:hover .wireframe-graphic {
-  stroke: var(--accent-green);
-  opacity: 0.95;
-  transform: scale(1.05);
+.nav-links a:hover {
+  color: var(--text-main);
 }
 
-/* Bottom Weighted Typography labels */
-.feature-card h3 {
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: -0.5px;
-  margin-bottom: 12px;
-  color: var(--text-primary);
+.mobile-only-btn { display: none; }
+
+/* Hamburger Navigation Button */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
 }
 
-/* Fixed Baseline Indicator Bars */
-.card-underline {
-  width: 48px;
+.hamburger span {
+  width: 22px;
   height: 2px;
-  background-color: var(--accent-green);
-  border-radius: 1px;
+  background-color: var(--text-main);
+  transition: all 0.3s ease;
 }
 
 /* ==========================================================================
-   7. Pull Quote Section
+   Buttons
    ========================================================================== */
-.quote-section {
-  padding: 160px 0;
-  text-align: center;
-}
-
-.quote-section blockquote {
-  font-size: 48px;
-  font-weight: 400;
-  line-height: 1.25;
-  letter-spacing: -1.5px;
-  margin-bottom: 24px;
-  padding: 0 20px;
-}
-
-.quote-section cite {
-  font-style: normal;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text-eyebrow);
-}
-
-/* ==========================================================================
-   8. Capital Deployment Section (Bottom Hero CTA)
-   ========================================================================== */
-.deployment-section {
-  padding: 160px 0 200px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.deployment-section h2 {
-  font-size: 54px;
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -1.5px;
-  max-width: 800px;
-  margin-bottom: 28px;
-}
-
-.deployment-section p {
-  font-size: 19px;
-  line-height: 1.65;
-  color: var(--text-muted);
-  max-width: 680px;
-  font-weight: 300;
-  margin-bottom: 48px;
-}
-
-/* ==========================================================================
-   9. Footer Section (Start a Conversation)
-   ========================================================================== */
-.site-footer {
-  position: relative;
-  padding: 120px 0 0 0;
-  overflow: hidden;          /* Crops the overlapping vector graphics cleanly */
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 250px;
-}
-
-.footer-grid-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 120%;
-  height: 100%;
-  background-size: 120px 120px;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.footer-logo-object {
-  width: 120%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center bottom; /* Pins the baseline to the bottom edge */
-}
-
-.footer-container {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 1140px;
-  padding: 0 40px;
-}
-
-.footer-cta-block {
-  margin-bottom: 40px;
-}
-
-.site-footer h2 {
-  font-size: 48px;
-  font-weight: 400;
-  color: #ffffff;
-  letter-spacing: -1px;
-  margin-bottom: 28px;
-}
-
-.footer-btn {
-  display: inline-block;
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 14px 44px;
-  font-size: 16px;
-  border-radius: 8px;
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.55rem 0.95rem;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.footer-btn:hover {
-  background-color: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-}
-
-/* Fluid SVG Asset Mask Wrapper */
-.giant-footer-brand-svg {
+.btn-framed {
+  color: var(--text-main);
+  border: 1px solid #1e293b;
   position: relative;
-  z-index: 2;
-  width: 100vw;              /* Forces the SVG to match screen boundaries perfectly */
-  height: 20vw;              /* Maintains responsive vertical thickness scale */
-  margin-top: auto;
-  pointer-events: none;
-  user-select: none;
-  display: flex;
-  align-items: flex-end;     /* Pins the paths tightly to the footer cutoff baseline */
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
 }
 
-.giant-footer-brand-svg svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin-bottom: -3vw;       /* Pulls the bottom loop tails slightly off-screen to match design crop */
+.btn-framed::before, .btn-framed::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border: 1px solid #475569;
+}
+.btn-framed::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.btn-framed::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+.btn-framed:hover {
+  border-color: var(--text-muted);
+}
+
+.btn-solid {
+  background-color: var(--accent-green-bg);
+  color: #052e16;
+  border: none;
+  font-weight: 500;
+}
+
+.btn-solid:hover {
+  background-color: #bbf7d0;
 }
 
 /* ==========================================================================
-   10. Scroll Reveal Animations
+   Cinematic Section Reveal Animation
    ========================================================================== */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(60px) scale(0.98);
-  transition: opacity 1s ease, transform 1s cubic-bezier(.22,.61,.36,1);
-  will-change: transform, opacity;
+section {
+  filter: blur(16px);
+  opacity: 0.1;
+  transform: translateY(40px) scale(0.97);
+  transition: 
+    filter 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 1.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: filter, opacity, transform;
 }
 
-.scroll-reveal.show {
+section.in-view {
+  filter: blur(0px);
   opacity: 1;
   transform: translateY(0) scale(1);
 }
 
-/* Direction variations */
-.hero-content.scroll-reveal {
-  transform: translateY(80px);
+/* ==========================================================================
+   Hero Section Layout
+   ========================================================================== */
+.hero-container {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  flex: 1;
 }
 
-/* Header fade */
-.site-header.scroll-reveal {
-  transform: translateY(-30px);
+h1, h2, h3 {
+    font-size: clamp(2rem, 4vw + 1rem, 4rem);
 }
 
-/* Footer entrance */
-.site-footer.scroll-reveal {
-  transform: translateY(100px);
+.hero-content h1 {
+  font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  margin-bottom: 1.5rem;
 }
 
-/* Optional floating effect */
-.feature-card.show:hover {
-  transform: translateY(-6px);
-  transition-duration: .4s;
+.italic-green {
+  font-family: var(--font-sub-heading);
+  font-style: italic;
+  color: var(--accent-green);
+  font-weight: 100;
+  letter-spacing: -3px;
+  font-size: 1em;
 }
 
-/* Respect users who've asked for less motion */
-@media (prefers-reduced-motion: reduce) {
-  .bg-svg-wrapper,
-  .scroll-reveal,
-  .terrain-valley-3d,
-  .terrain-wireframe,
-  .feature-card,
-  .wireframe-graphic,
-  .cta-btn,
-  .footer-btn {
-    animation: none !important;
-    transition: none !important;
+.hero-description {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+  line-height: 1.7;
+  margin-bottom: 2.25rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Grid Canvas Container */
+.grid-container {
+  height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+  touch-action: none;
+  background-color: var(--bg-color-2); /* Masks floating background nodes behind grid */
+  border-radius: 4px;
+}
+
+#nodeGrid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Proposition Section Layout
+   ========================================================================== */
+.proposition-section {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.section-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-green);
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+}
+
+.prop-content h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 1.5rem;
+}
+
+.prop-description {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 1.2vw, 0.875rem);
+  line-height: 1.7;
+}
+
+/* Network Node Canvas Area */
+.network-container {
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+#networkCanvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Stats Counter Section Layout
+   ========================================================================== */
+.stats-section {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.stat-number {
+  font-size: clamp(4.5rem, 9vw + 1rem, 9.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -4px;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.stat-number .plus {
+  font-weight: 300;
+  color: var(--text-main);
+}
+
+.stat-text {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 1.2vw, 0.875rem);
+  line-height: 1.7;
+}
+
+/* ==========================================================================
+   Responsive Media Queries
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .hero-container,
+  .proposition-section,
+  .stats-section {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
-  .scroll-reveal {
-    opacity: 1;
-    transform: none;
+
+  .hero-content,
+  .prop-content,
+  .stat-number,
+  .grid-container,
+  .network-container,
+  .stat-text {
+    max-width: 100%;
+  }
+
+  .cta-buttons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 850px) {
+  .desktop-only-btn { display: none; }
+  .mobile-only-btn { display: inline-block; margin-top: 1rem; }
+  .hamburger { display: flex; }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    right: 2rem;
+    left: 2rem;
+    background-color: rgba(3, 7, 18, 0.95);
+    border: 1px solid #1e293b;
+    backdrop-filter: blur(12px);
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.25rem;
+    border-radius: 8px;
+    display: none;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar,
+  .hero-container,
+  .proposition-section,
+  .stats-section {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cta-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+    text-align: center;
   }
 }
 
 /* ==========================================================================
-   11. RESPONSIVE BREAKPOINTS
-   All section-level responsive rules are consolidated here, from largest
-   to smallest viewport, so nothing overrides itself out of order.
+   Method Accordion Section Layout
    ========================================================================== */
+.method-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
 
-/* ---------- Large desktops / laptops (<=1200px) ---------- */
-@media (max-width: 1200px) {
-  .section-container,
-  .features-section .section-container,
-  .footer-container {
-    padding: 0 32px;
-  }
+.method-header {
+  max-width: 720px;
+  margin-bottom: 3.5rem;
+}
 
-  .hero-content h1 {
-    font-size: 58px;
-  }
+.method-header h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 1.5rem;
+}
 
-  .philosophy-section h2,
-  .deployment-section h2 {
-    font-size: 46px;
+.method-description {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 1.2vw, 0.875rem);
+  line-height: 1.7;
+}
+
+/* Accordion Container */
+.accordion-container {
+  display: flex;
+  height: 480px;
+  width: 100%;
+  gap: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+/* Individual Accordion Cards */
+.accordion-card {
+  flex: 1; /* Collapsed width ratio */
+  background: #021a0a;
+  border: 1px solid #063d18;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  transition: flex 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.5s ease, 
+              border-color 0.5s ease;
+}
+
+.accordion-card:hover {
+  border-color: #002506;
+}
+
+/* Active Expanded State */
+.accordion-card.active {
+  flex: 6; /* Expanded width ratio */
+  background: #04290f;
+  border-color: #002506;
+  cursor: default;
+}
+
+.card-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  opacity: 0.15;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.accordion-card.active .card-inner {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.card-visual {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.card-content h3 {
+  font-size: 1.75rem;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.card-content p {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #B8B8B8;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+/* Bottom Right Card Index Number */
+.card-number {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #4ad263;
+  background: #021a0a;
+  padding: 4px 8px;
+  border-radius: 2px;
+  border: 1px solid #063d18;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.accordion-card.active .card-number {
+  background: #DFF1DA;
+  color: #021a0a;
+  font-weight: 300;
+}
+
+@media (max-width: 850px) {
+  .accordion-container {
+    flex-direction: column;
+    height: 700px;
   }
 }
 
-/* ---------- Tablets (<=992px) ---------- */
-@media (max-width: 992px) {
-  .site-header {
-    padding: 32px 40px;
-  }
+/* ==========================================================================
+   Capabilities Section Layout & Grid System
+   ========================================================================== */
+/* ==========================================================================
+   Application Section Layout & Card Overhaul
+   ========================================================================== */
+.application-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
 
-  .hero-container {
-    min-height: 70vh;
-    padding: 50px 20px;
-  }
+.application-header {
+  max-width: 680px;
+  margin-bottom: 4rem;
+}
 
-  .hero-content h1 {
-    font-size: 48px;
-    letter-spacing: -1px;
-  }
+.application-header h2 {
+  font-size: clamp(2.25rem, 4vw + 1rem, 3.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
 
-  .hero-content h3 {
-    font-size: 24px;
-  }
+.application-description {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 1.2vw, 0.875rem);
+  line-height: 1.7;
+}
 
-  .hero-lead {
-    font-size: 18px;
-  }
+/* 4-Column Grid */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
 
-  .bg-svg-wrapper {
-    width: 900px;
-    height: 900px;
-  }
+/* Isolated Card Context */
+.app-card {
+  position: relative !important;
+  background: rgba(3, 10, 20, 0.6);
+  height: 190px;
+  padding: 1.75rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  box-sizing: border-box !important;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
 
-  /* Philosophy section stacks vertically */
-  .philosophy-section {
-    padding: 100px 0;
-  }
+.app-card:hover {
+  background: rgba(4, 20, 32, 0.85);
+  transform: translateY(-2px);
+}
 
-  .philosophy-section .philosophy-layout {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 50px;
-  }
+/* Strictly Positioned L-shaped Corner Brackets */
+.app-card .card-corner {
+  position: absolute !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  border-style: solid !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  transition: border-color 0.3s ease;
+}
 
-  .philosophy-text-block,
-  .philosophy-graphic-block {
-    width: 100%;
-    max-width: 100%;
-    flex: none;
-  }
+.app-card:hover .card-corner {
+  border-color: var(--accent-green) !important;
+}
 
-  .philosophy-graphic-block {
-    padding: 30px 0 0 0;
-    justify-content: center;
-  }
+.app-card .card-corner.top-left {
+  top: 0 !important;
+  left: 0 !important;
+  border-width: 1.5px 0 0 1.5px !important;
+}
 
-  .philosophy-section h2 {
-    font-size: 38px;
-    max-width: 100%;
-  }
+.app-card .card-corner.top-right {
+  top: 0 !important;
+  right: 0 !important;
+  border-width: 1.5px 1.5px 0 0 !important;
+}
 
-  .terrain-valley-3d,
-  .terrain-wireframe-glow {
-    max-width: 440px;
-  }
+.app-card .card-corner.bottom-left {
+  bottom: 0 !important;
+  left: 0 !important;
+  border-width: 0 0 1.5px 1.5px !important;
+}
 
-  .terrain-wireframe {
-    max-width: 420px;
-  }
+.app-card .card-corner.bottom-right {
+  bottom: 0 !important;
+  right: 0 !important;
+  border-width: 0 1.5px 0 0 !important;
+}
 
-  /* Feature grid drops to 2 columns */
-  .features-section {
-    padding: 80px 0;
-  }
+/* Top-Right Locked Icon Container with Inset Space */
+.app-card .app-icon-slot {
+  position: absolute !important;
+  top: 1.5rem !important;      /* Pushes icon away from top border bracket */
+  right: 1.5rem !important;    /* Pushes icon away from right border bracket */
+  width: 36px !important;      /* Fixed icon width */
+  height: 36px !important;     /* Fixed icon height */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
 
-  .features-section h2 {
-    font-size: 38px;
-  }
+/* Image & SVG Resizing Inside Slot */
+.app-card .app-icon-slot svg,
+.app-card .app-icon-slot img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+}
 
-  .features-grid {
+/* Bottom-Left Card Title */
+.app-card .app-title {
+  font-size: 1.05rem !important;
+  font-weight: 400 !important;
+  color: var(--text-main) !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.3px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  z-index: 2 !important;
+}
+
+/* Responsive Grid Rules */
+@media (max-width: 1200px) {
+  .app-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .quote-section {
-    padding: 110px 0;
-  }
-
-  .quote-section blockquote {
-    font-size: 36px;
-  }
-
-  .deployment-section {
-    padding: 110px 0 140px 0;
-  }
-
-  .deployment-section h2 {
-    font-size: 38px;
-  }
-
-  .deployment-section p {
-    font-size: 17px;
-  }
-
-  .giant-footer-brand-svg {
-    height: 26vw;
-  }
 }
 
-/* ---------- Small tablets / large phones (<=768px) ---------- */
-@media (max-width: 768px) {
-  .section-container,
-  .features-section .section-container,
-  .footer-container {
-    padding: 0 24px;
-  }
-
-  .site-header {
-    padding: 24px;
-    justify-content: center;
-    text-align: center;
-  }
-
-  h1 { font-size: 44px; }
-
-  .hero-content {
-    padding: 0 16px;
-  }
-
-  .hero-content h1 {
-    font-size: 38px;
-    letter-spacing: -1px;
-  }
-
-  .hero-content h3 {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-
-  .hero-lead {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-
-  .hero-content h4 {
-    font-size: 12px;
-    margin-bottom: 32px;
-    letter-spacing: 1px;
-  }
-
-  .hero-content .cta-btn {
-    padding: 12px 28px;
-    font-size: 14px;
-  }
-
-  .bg-svg-wrapper {
-    width: 480px;
-    height: 480px;
-  }
-
-  .philosophy-section h2,
-  .deployment-section h2 {
-    font-size: 30px;
-    letter-spacing: -1px;
-  }
-
-  .philosophy-content p {
-    font-size: 16px;
-  }
-
-  .features-section h2 {
-    font-size: 30px;
-    margin-bottom: 32px;
-  }
-
-  .features-grid {
+@media (max-width: 640px) {
+  .app-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
 
-  .feature-card {
-    aspect-ratio: auto;
-    min-height: 180px;
-  }
-
-  .quote-section {
-    padding: 80px 0;
-  }
-
-  .quote-section blockquote {
-    font-size: 26px;
-    padding: 0 8px;
-  }
-
-  .deployment-section {
-    padding: 80px 0 100px 0;
-  }
-
-  .deployment-section p {
-    font-size: 16px;
-    margin-bottom: 36px;
-  }
-
-  .site-footer {
-    min-height: 320px;
-    padding-top: 70px;
-  }
-
-  .site-footer h2 {
-    font-size: 28px;
-  }
-
-  .footer-btn {
-    padding: 12px 32px;
-    font-size: 14px;
-  }
-
-  .giant-footer-brand-svg {
-    height: 34vw;
-  }
-
-  .giant-footer-brand-svg svg {
-    margin-bottom: -5vw; /* Adjusts the cropping offset slightly for smaller viewports */
+  .app-card {
+    height: 160px;
   }
 }
 
-/* ---------- Phones (<=480px) ---------- */
-@media (max-width: 480px) {
-  .logo-img {
-    height: 22px;
+/* ==========================================================================
+   Application Section Layout & Corner Bracket Cards
+   ========================================================================== */
+.application-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.application-header {
+  max-width: 680px;
+  margin-bottom: 4rem;
+}
+
+.application-header h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.application-description {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 1.2vw, 0.875rem);
+  line-height: 1.7;
+}
+
+/* 3-Column Application Grid */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.75rem;
+}
+
+/* Base Card Style (No Full Border) */
+.app-card {
+  position: relative;
+  background: rgba(3, 10, 20, 0.6);
+  padding: 1.75rem 1.5rem;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Places heading at the bottom */
+  align-items: flex-start;  /* Left-aligns heading text */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.app-card:hover {
+  background: rgba(4, 20, 32, 0.85);
+  transform: translateY(-2px);
+}
+
+/* Corner Bracket Borders */
+.card-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(255, 255, 255, 0.35);
+  border-style: solid;
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+}
+
+.app-card:hover .card-corner {
+  border-color: var(--accent-green);
+}
+
+.card-corner.top-left {
+  top: 0;
+  left: 0;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.card-corner.top-right {
+  top: 0;
+  right: 0;
+  border-width: 1.5px 1.5px 0 0;
+}
+
+.card-corner.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 1.5px 1.5px;
+}
+
+.card-corner.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* Top Right Icon Container */
+.app-icon-placeholder {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.app-icon-placeholder svg,
+.app-icon-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.app-card h3 {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-main);
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  margin: 0;
+  text-align: left;
+}
+
+/* Responsive Grid Rules */
+@media (max-width: 1200px) {
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .app-grid {
+    grid-template-columns: 1fr;
   }
 
-  .logo {
-    font-size: 20px;
+  .app-card {
+    height: 160px;
+  }
+}
+
+/* ==========================================================================
+   Sector Intelligence Layout & Gradient Cards
+   ========================================================================== */
+.sector-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.sector-header {
+  max-width: 680px;
+  margin-bottom: 4rem;
+}
+
+.sector-header h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.sector-description {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: clamp(0.8rem, 1.2vw, 0.875rem);
+  line-height: 1.7;
+}
+
+/* 2-Column Sector Grid */
+.sector-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* Base Card Style */
+.sector-card {
+  position: relative;
+  min-height: 280px;
+  padding: 2.5rem 2.25rem 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #030a14; /* Deep dark background base */
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.sector-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Background Image & Overlay System */
+.sector-bg-img-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.sector-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(300%);
+  transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+}
+
+/* Subtle Gradient Vignette to enhance text contrast */
+.sector-bg-img-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(3, 10, 20, 0.4) 0%, rgba(3, 10, 20, 0.85) 50%);
+}
+
+/* Hover effect to bring up image brightness slightly */
+.sector-card:hover .sector-bg-img {
+  opacity: 0.45;
+  transform: scale(1.03);
+  filter: grayscale(0%) contrast(105%);
+}
+
+/* Elevate internal content above the background image */
+.sector-card-body,
+.sector-icon-placeholder,
+.sector-footer,
+.card-corner {
+  position: relative;
+  z-index: 1;
+}
+
+.sector-card .card-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(255, 255, 255, 0.4);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.sector-card .card-corner.top-left {
+  top: 0;
+  left: 0;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.sector-card .card-corner.top-right {
+  top: 0;
+  right: 0;
+  border-width: 1.5px 1.5px 0 0;
+}
+
+.sector-card .card-corner.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 1.5px 1.5px;
+}
+
+.sector-card .card-corner.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* Color Gradients */
+.grad-green {
+  background: linear-gradient(135deg, #021e0a 0%, #052c10 40%, #011206 100%);
+}
+
+.grad-blue {
+  background: linear-gradient(135deg, #06112c 0%, #071942 50%, #020817 100%);
+}
+
+.grad-purple {
+  background: linear-gradient(135deg, #27063d 0%, #3e0960 50%, #10021c 100%);
+}
+
+.grad-water {
+  background: linear-gradient(135deg, #061f3d 0%, #0a3364 50%, #020d1c 100%);
+}
+
+.grad-indigo {
+  background: linear-gradient(135deg, #04122c 0%, #081d48 50%, #010817 100%);
+}
+
+.grad-amber {
+  background: linear-gradient(135deg, #2e1603 0%, #4a2404 50%, #140801 100%);
+}
+
+/* Right-aligned Icon Container */
+.sector-icon-placeholder {
+  position: absolute;
+  top: 2.25rem;
+  right: 2.25rem;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sector-icon-placeholder svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Card Body Content */
+.sector-card-body {
+  max-width: 70%;
+}
+
+.sector-card h3 {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  margin-bottom: 1rem;
+}
+
+.sector-card p {
+  font-family: var(--font-body);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Bottom Monospace Sub-Footer */
+.sector-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+}
+
+.sector-footer .arrow {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.sector-card:hover .sector-footer .arrow {
+  transform: translate(2px, -2px);
+  color: var(--accent-green);
+}
+
+/* Responsive Grid Rules */
+@media (max-width: 850px) {
+  .sector-grid {
+    grid-template-columns: 1fr;
   }
 
-  .meta-text {
-    font-size: 11px;
-    letter-spacing: 1px;
+  .sector-card-body {
+    max-width: 80%;
+  }
+}
+
+/* Bottom Monospace Footer with Inline Arrow Image */
+.sector-footer {
+  margin-top: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+}
+
+.footer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem; /* Keeps the arrow image close to the text */
+}
+
+.footer-arrow-img {
+  width: 12px;  /* Adjust size as needed for your icon image */
+  height: 12px;
+  display: inline-block;
+  object-fit: contain;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover Animation: Shifts arrow slightly up and right */
+.sector-card:hover .footer-arrow-img {
+  transform: translate(3px, -3px);
+}
+
+/* ==========================================================================
+   Who We Work With Section Layout
+   ========================================================================== */
+.partners-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.partners-header {
+  max-width: 680px;
+  margin-bottom: 4rem;
+}
+
+.partners-header h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  color: var(--text-main);
+}
+
+/* 3-Column Grid Layout */
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+/* Dotted Border Card with Green Corner Brackets */
+.partner-card {
+  position: relative;
+  background: rgba(2, 8, 18, 0.7);
+  border: 1px dotted rgba(255, 255, 255, 0.35); /* Dotted Line Border */
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.partner-card:hover {
+  border-color: rgba(93, 184, 71, 0.6);
+  transform: translateY(-3px);
+}
+
+/* Green Corner Brackets */
+.partner-card .card-corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--accent-green);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.partner-card .card-corner.top-left {
+  top: -1px;
+  left: -1px;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.partner-card .card-corner.top-right {
+  top: -1px;
+  right: -1px;
+  border-width: 1.5px 1.5px 0 0;
+}
+
+.partner-card .card-corner.bottom-left {
+  bottom: -1px;
+  left: -1px;
+  border-width: 0 0 1.5px 1.5px;
+}
+
+.partner-card .card-corner.bottom-right {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* Image Container */
+.partner-img-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  background: #041a0d;
+}
+
+.partner-img {
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(30%) contrast(110%);
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.partner-card:hover .partner-img {
+  opacity: 0.9;
+  transform: scale(1.03);
+  filter: grayscale(0%) contrast(105%);
+}
+
+/* Card Text Styling */
+.partner-card-content h3 {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-main);
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  margin-bottom: 1rem;
+}
+
+.partner-card-content p {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+/* Responsive Grid Rules */
+@media (max-width: 1024px) {
+  .partners-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .partners-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================================================
+   Footer Section Layout
+   ========================================================================== */
+.site-footer {
+  width: 100%;
+  max-width: 1280px;
+  margin: 4rem auto 6rem auto;
+  padding: 0 2rem;
+}
+
+.footer-container {
+  position: relative;
+  background: rgba(2, 8, 18, 0.4);
+  padding: 4rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 320px;
+}
+
+/* Corner Bracket Accents */
+.footer-container .card-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: rgba(255, 255, 255, 0.4);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.footer-container .card-corner.top-left {
+  top: 0;
+  left: 0;
+  border-width: 1.5px 0 0 1.5px;
+}
+
+.footer-container .card-corner.top-right {
+  top: 0;
+  right: 0;
+  border-width: 1.5px 1.5px 0 0;
+}
+
+.footer-container .card-corner.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 1.5px 1.5px;
+}
+
+.footer-container .card-corner.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* Top Block: Logo & Tagline */
+.footer-top {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.footer-logo-slot {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.footer-tagline {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--text-main);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+/* Bottom Block: Copyright & Links */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.footer-socials {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.footer-socials a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-socials a:hover {
+  color: var(--text-main);
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 0 1.25rem;
+    margin-bottom: 3rem;
   }
 
-  .eyebrow-text {
-    font-size: 12px;
-    margin-bottom: 18px;
+  .footer-container {
+    padding: 2.5rem 1.75rem;
   }
 
-  .hero-container {
-    min-height: 60vh;
-    padding: 40px 16px;
+  .footer-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
   }
 
-  .hero-content h1 {
-    font-size: 30px;
+  .footer-bottom {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
   }
 
-  .hero-content h3 {
-    font-size: 17px;
+  .footer-socials {
+    gap: 1.5rem;
+  }
+}
+
+
+/* ==========================================================================
+   Call To Action Section Layout
+   ========================================================================== */
+.cta-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8rem 2rem 6rem 2rem;
+  text-align: center;
+}
+
+.cta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.cta-container h2 {
+  font-size: clamp(2rem, 4vw + 1rem, 3.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.cta-subtext {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  margin-bottom: 2.5rem;
+  max-width: 580px;
+  line-height: 1.6;
+}
+
+.cta-btn {
+  padding: 0.8rem 1.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cta-btn:hover {
+    color: #DFF1DA;
+    background-color: #0C140A;
+    border-color: #000515;
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .cta-section {
+    padding: 5rem 1.25rem 4rem 1.25rem;
+  }
+}
+
+
+/* ==========================================================================
+   What The Capability Enables Section
+   ========================================================================== */
+.capabilities-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.capabilities-header {
+  margin-bottom: 5rem;
+}
+
+.capabilities-header h2 {
+  font-size: clamp(2.25rem, 4vw + 1rem, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  color: var(--text-main);
+}
+
+/* Grid System: 6 columns to allow 3-column top row and centered 2-column bottom row */
+.capabilities-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4.5rem 3rem;
+}
+
+/* Top Row: Items 1, 2, 3 span 2 columns each (3-across layout) */
+.capabilities-grid .capability-card:nth-child(1),
+.capabilities-grid .capability-card:nth-child(2),
+.capabilities-grid .capability-card:nth-child(3) {
+  grid-column: span 2;
+}
+
+/* Bottom Row: Items 4 & 5 centered */
+.capabilities-grid .capability-card:nth-child(4) {
+  grid-column: 1 / span 2; /* Adjust to "2 / span 2" if you prefer them centered directly under columns 1.5 & 2.5 */
+}
+
+.capabilities-grid .capability-card:nth-child(5) {
+  grid-column: 3 / span 2;
+}
+
+/* Card Anchor */
+.capability-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-right: 3.5rem; /* Space reservation so text never collides with icon */
+}
+
+/* Top-Right Absolute Positioned Icon Slot */
+.capability-card .icon-slot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.capability-card .icon-slot svg,
+.capability-card .icon-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Card Content Typography */
+.capability-card h3 {
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--text-main);
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  margin-bottom: 1rem;
+}
+
+.capability-card p {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .capabilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.5rem 2rem;
   }
 
-  .hero-lead {
-    font-size: 15px;
+  .capabilities-grid .capability-card:nth-child(1),
+  .capabilities-grid .capability-card:nth-child(2),
+  .capabilities-grid .capability-card:nth-child(3),
+  .capabilities-grid .capability-card:nth-child(4),
+  .capabilities-grid .capability-card:nth-child(5) {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .capabilities-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
   }
 
-  .hero-content .cta-btn {
+  .capability-card {
+    padding-right: 0;
+  }
+
+  .capability-card .icon-slot {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 1.25rem;
+  }
+}
+
+/* ==========================================================================
+   Qoridian Insights Featured Banner Layout
+   ========================================================================== */
+.insights-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+/* Base Card Container with Green Radial Glow Base */
+.insights-card {
+  position: relative;
+  background: radial-gradient(
+    ellipse at center,
+    #0d3318 0%,
+    #051c0d 45%,
+    #020b05 100%
+  );
+  padding: 6rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Background Grid Overlay Positioner */
+.insights-grid-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35; /* Adjust opacity for background SVG grid visibility */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.insights-grid-overlay svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Outer L-shaped Corner Brackets (White) */
+.insights-card > .card-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: #ffffff;
+  border-style: solid;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.insights-card > .card-corner.top-left {
+  top: 0;
+  left: 0;
+  border-width: 2px 0 0 2px;
+}
+
+.insights-card > .card-corner.top-right {
+  top: 0;
+  right: 0;
+  border-width: 2px 2px 0 0;
+}
+
+.insights-card > .card-corner.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 2px 2px;
+}
+
+.insights-card > .card-corner.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-width: 0 2px 2px 0;
+}
+
+/* Content Container Above Background Elements */
+.insights-content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Headline Styles */
+.insights-content h2 {
+  font-size: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  color: #ffffff;
+  margin-bottom: 2rem;
+}
+
+.insights-content h2 .italic-green {
+  --font-sub-heading: 'Newsreader', serif;
+  font-style: italic;
+  color: #5db847; /* Primary neon green text color */
+}
+
+/* Body Copy */
+.insights-description {
+  font-family: var(--font-body);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  line-height: 1.7;
+  max-width: 680px;
+  margin-bottom: 3.5rem;
+}
+
+/* Centered Button with Green Corner Brackets */
+.coming-soon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 2.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.coming-soon-btn span {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+}
+
+/* Small Green Brackets for Button */
+.coming-soon-btn .card-corner {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-color: #5db847;
+  border-style: solid;
+  pointer-events: none;
+}
+
+.coming-soon-btn .card-corner.top-left {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.coming-soon-btn .card-corner.top-right {
+  top: -1px;
+  right: -1px;
+  border-width: 1px 1px 0 0;
+}
+
+.coming-soon-btn .card-corner.bottom-left {
+  bottom: -1px;
+  left: -1px;
+  border-width: 0 0 1px 1px;
+}
+
+.coming-soon-btn .card-corner.bottom-right {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 640px) {
+  .insights-card {
+    padding: 4rem 1.5rem;
+  }
+
+  .insights-description {
+    margin-bottom: 2.5rem;
+  }
+}
+
+/* Styled Tagline Container above Headline */
+.insights-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(93, 184, 71, 0.08);
+  border: 1px solid rgba(93, 184, 71, 0.25);
+  margin-bottom: 2rem;
+}
+
+.insights-tagline .tagline-icon {
+  font-size: 0.65rem;
+  color: #5db847; /* Matching accent green */
+  line-height: 1;
+}
+
+.insights-tagline .tagline-text {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.725rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: #5db847;
+  text-transform: uppercase;
+}
+
+/* Adjust headline spacing relative to tagline */
+.insights-content h2 {
+  font-size: clamp(2.5rem, 5vw + 1rem, 4.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  color: #ffffff;
+  margin-bottom: 1.75rem;
+}
+
+
+/* Base Sector Card Setup */
+.sector-card {
+  --hover-overlay: linear-gradient(180deg, rgba(3, 10, 20, 0.4) 0%, rgba(3, 10, 20, 0.9) 100%);
+  --hover-accent: rgba(255, 255, 255, 0.9);
+  
+  position: relative;
+  min-height: 280px;
+  padding: 2.5rem 2.25rem 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #030a14;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sector-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Background Image Overlay System */
+.sector-bg-img-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.sector-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+}
+
+.sector-bg-img-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(3, 10, 20, 0.5) 0%, rgba(3, 10, 20, 0.92) 100%);
+  transition: background 0.4s ease;
+}
+
+/* Base Corner Brackets */
+.sector-card .card-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(255, 255, 255, 0.3);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 2;
+  transition: border-color 0.35s ease;
+}
+
+.sector-card .card-corner.top-left { top: 0; left: 0; border-width: 1.5px 0 0 1.5px; }
+.sector-card .card-corner.top-right { top: 0; right: 0; border-width: 1.5px 1.5px 0 0; }
+.sector-card .card-corner.bottom-left { bottom: 0; left: 0; border-width: 0 0 1.5px 1.5px; }
+.sector-card .card-corner.bottom-right { bottom: 0; right: 0; border-width: 0 1.5px 1.5px 0; }
+
+/* Dynamic Hover Transformations */
+.sector-card:hover .sector-bg-img {
+  opacity: 0.45;
+  transform: scale(1.03);
+  filter: grayscale(0%) contrast(105%);
+}
+
+.sector-card:hover .sector-bg-img-wrapper::after {
+  background: var(--hover-overlay);
+}
+
+.sector-card:hover .card-corner {
+  border-color: var(--hover-accent);
+}
+
+.sector-card:hover .sector-footer {
+  color: var(--hover-accent);
+}
+
+/* Internal Layout Layers */
+.sector-card-body,
+.sector-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   Per-Card Hover Color Themes
+   ========================================================================== */
+
+/* 1. Mining & Minerals (Gold/Amber) */
+.sector-card.theme-amber {
+  --hover-overlay: linear-gradient(180deg, rgba(180, 100, 20, 0.28) 0%, rgba(3, 10, 20, 0.92) 100%);
+  --hover-accent: #CC9300;
+}
+
+/* 2. Digital Infrastructure (Deep Purple) */
+.sector-card.theme-purple {
+  --hover-overlay: linear-gradient(180deg, rgba(120, 50, 180, 0.28) 0%, rgba(3, 10, 20, 0.92) 100%);
+  --hover-accent: #6C63FF;
+}
+
+/* 3. Power Systems (Royal Blue) */
+.sector-card.theme-blue {
+  --hover-overlay: linear-gradient(180deg, rgba(30, 80, 180, 0.28) 0%, rgba(3, 10, 20, 0.92) 100%);
+  --hover-accent: #5DB847;
+}
+
+/* 4. Water Resources (Cyan) */
+.sector-card.theme-cyan {
+  --hover-overlay: linear-gradient(180deg, rgba(14, 165, 233, 0.28) 0%, rgba(3, 10, 20, 0.92) 100%);
+  --hover-accent: #5083FF;
+}
+
+/* 5. Health Systems (Teal) */
+.sector-card.theme-teal {
+  --hover-overlay: linear-gradient(180deg, rgba(20, 184, 166, 0.28) 0%, rgba(3, 10, 20, 0.92) 100%);
+  --hover-accent: #789FFF;
+}
+
+/* 6. Food Systems (Emerald Green) */
+.sector-card.theme-emerald {
+  --hover-overlay: linear-gradient(180deg, rgba(34, 197, 94, 0.28) 0%, rgba(3, 10, 20, 0.92) 100%);
+  --hover-accent: #7AEC5F;
+}
+
+/* ==========================================================================
+   Stats Section Upgrade
+   ========================================================================== */
+.stats-section {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+
+.stats-card {
+  position: relative;
+  background: radial-gradient(circle at 15% 50%, rgba(13, 51, 24, 0.4) 0%, rgba(3, 10, 20, 0.85) 80%);
+  padding: 4.5rem 4rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.56);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.stats-card:hover {
+  border-color: rgba(93, 184, 71, 0.3);
+  box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.75), 0 0 30px rgba(93, 184, 71, 0.1);
+}
+
+/* Outer Corner Brackets */
+.stats-card .card-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(255, 255, 255, 0.35);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 3;
+  transition: border-color 0.4s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.stats-card:hover .card-corner {
+  border-color: var(--accent-green, #5db847);
+  width: 18px;
+  height: 18px;
+}
+
+.stats-card .card-corner.top-left { top: 0; left: 0; border-width: 2px 0 0 2px; }
+.stats-card .card-corner.top-right { top: 0; right: 0; border-width: 2px 2px 0 0; }
+.stats-card .card-corner.bottom-left { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+.stats-card .card-corner.bottom-right { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+/* Dynamic Background Elements */
+.stats-glow {
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(93, 184, 71, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.5s ease;
+}
+
+.stats-card:hover .stats-glow {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.stats-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Layout Split: Fits left side dynamically & aligns top edges */
+.stats-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto 1fr; /* Brings right column closer to counter width */
+  align-items: flex-start;         /* Top-aligns both columns */
+  gap: 2.25rem;                     /* Reduced gap to pull copy closer */
+}
+
+/* Metric Display */
+.stats-metric-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metric-display {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-mono, monospace);
+  font-size: clamp(4rem, 8vw, 7.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -3px;
+  color: #e2f5dc; /* Off-white green glow tint */
+  text-shadow: 0 0 25px rgba(93, 184, 71, 0.25);
+}
+
+.metric-display .plus-sign {
+  color: var(--accent-green, #5db847);
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
+/* Right Description Block Offset */
+.stats-info {
+  padding-top: 1.85rem; /* Offsets paragraph past the tag to align with numbers */
+  max-width: 620px;
+}
+
+.stats-info p {
+  font-family: var(--font-body);
+  color: #DFF1DA;
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  line-height: 1.7;
+  letter-spacing: -0.2px;
+  margin: 0;
+  margin-top: 30px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .stats-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .stats-info {
+    padding-top: 0; /* Resets offset for stacked mobile layout */
+  }
+
+  .stats-card {
+    padding: 3rem 2rem;
+  }
+}
+
+/* Footer Link Reset & Formatting */
+.sector-footer a,
+.sector-footer a:visited,
+.sector-footer a:active {
+  color: var(--text-muted, rgba(255, 255, 255, 0.6));
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+/* Hover Accent Color Shift */
+.sector-card:hover .sector-footer a {
+  color: var(--hover-accent, #ffffff);
+}
+
+/* Arrow Hover Motion */
+.sector-footer a:hover .footer-arrow-img {
+  transform: translate(3px, -3px);
+}
+
+/* =========================
+   PARALLAX SECTIONS
+========================= */
+
+.parallax-section {
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Important for the JS parallax */
+  will-change: background-position;
+}
+
+/* =========================
+   IMAGES
+========================= */
+
+.section-1 {
+  background-image: url("./Minerial_1_Background.png");
+}
+
+.section-2 {
+  background-image: url("./Minerial_1_Background.png");
+}
+
+.section-3 {
+  background-image: url("./Minerial_1_Background.png");
+}
+
+.section-4 {
+  background-image: url("images/image-4.jpg");
+}
+
+.section-5 {
+  background-image: url("images/image-5.jpg");
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+  .parallax-section {
+    height: 100svh;
+
+    /* Slightly reduce movement on mobile */
+    background-position: center center;
+  }
+
+}
+
+/* =========================
+   IMAGE SECTIONS
+========================= */
+
+.image-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: block;
+}
+
+.image-section img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1024px) {
+
+  .image-section {
     width: 100%;
-    padding: 14px 20px;
+    height: 100vh;
   }
 
-  .bg-svg-wrapper {
-    width: 340px;
-    height: 340px;
+  .image-section img {
+    object-fit: cover;
+    object-position: center center;
   }
 
-  .philosophy-section {
-    padding: 70px 0;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+  .image-section {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
   }
 
-  .philosophy-section h2,
-  .deployment-section h2 {
-    font-size: 26px;
+  .image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
   }
 
-  .terrain-valley-3d,
-  .terrain-wireframe {
-    max-width: 100%;
+}
+
+
+/* =========================
+   SMALL PHONES
+========================= */
+
+@media (max-width: 480px) {
+
+  .image-section {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 29 / 16;
   }
 
-  .features-section {
-    padding: 60px 0;
+  .image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
   }
 
-  .features-section h2 {
-    font-size: 26px;
-  }
-
-  .feature-card {
-    padding: 22px 18px 18px 18px;
-    min-height: 160px;
-  }
-
-  .wireframe-graphic {
-    width: 72px;
-    height: 72px;
-  }
-
-  .feature-card h3 {
-    font-size: 19px;
-  }
-
-  .quote-section blockquote {
-    font-size: 21px;
-  }
-
-  .deployment-section {
-    padding: 60px 0 80px 0;
-  }
-
-  .deployment-section p {
-    font-size: 15px;
-  }
-
-  .site-footer h2 {
-    font-size: 22px;
-    padding: 0 12px;
-  }
-
-  .footer-btn {
-    width: calc(100% - 48px);
-  }
-
-  .giant-footer-brand-svg {
-    height: 44vw;
-  }
 }
