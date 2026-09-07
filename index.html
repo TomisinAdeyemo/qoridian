@@ -5,179 +5,684 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Qoridian</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/svg" href="./logo2.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" type="image/x-icon" href="./qoridian logo footer.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- Global Subtle Background Grid Matrix -->
-  <div class="global-grid-matrix"></div>
+  <canvas id="bgNodesCanvas"></canvas>
 
-  <!-- 1. HEADER NAV -->
-  <header class="site-header">
-    <img src="./Vector.png" alt="Qoridian Logo" class="logo-img">
+  <!-- Navbar -->
+  <header class="navbar">
+    <a href="#" class="logo">
+      <img src="./qoridian logo.svg" alt="Qoridian Logo">
+    </a>
+    
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">ABOUT</a>
+      <a href="#how-it-works">HOW IT WORKS</a>
+      <a href="#who-we-work-with">WHO WE WORK WITH</a>
+      <a href="#applications">APPLICATIONS</a>
+      <a href="#sector-intelligence">SECTOR INTELLIGENCE</a>
+    </nav>
+    
+    <a href="#explore" class="btn btn-framed desktop-only-btn">EXPLORE QORIDIAN</a>
   </header>
 
-  <main>
+  <!-- Hero Section -->
+  <section class="hero-container">
+    <div class="hero-content">
+      <h1>The Context Shapes <br><span class="italic-green">What Happens Next.</span></h1>
+      <p class="hero-description">
+        Qoridian connects evidence across place, infrastructure, policy, markets and time to reveal how conditions interact and what those relationships mean for a decision.
+      </p>
+      <div class="cta-buttons">
+        <a href="#explore" class="btn btn-framed">EXPLORE QORIDIAN</a>
+        <a href="#contact" class="btn btn-solid">START A CONVERSATION</a>
+      </div>
+    </div>
+
+    <!-- Dynamic Canvas Node Grid -->
+    <div class="grid-container">
+      <canvas id="nodeGrid"></canvas>
+    </div>
+  </section>
+
+  <!-- Section 2: The Proposition -->
+<section class="proposition-section" id="about">
+  <div class="prop-content">
+    <span class="section-tag" data-decode="■ THE PROPOSITION">■ THE PROPOSITION</span>
+    <h2>The Answer Is Rarely In <br><span class="italic-green">One Layer.</span></h2>
+    <p class="prop-description">
+      Every consequential decision sits inside a wider system of physical, economic, institutional and human conditions. Viewed separately, each source reveals only part of the picture. Qoridian brings the relevant evidence into relation—so the system can be understood as a whole.
+    </p>
+  </div>
+
+  <!-- Connected Node Map Canvas -->
+  <div class="network-container">
+    <canvas id="networkCanvas"></canvas>
+  </div>
+</section>
+
+
+<!-- Section 3: Data Metrics Counter -->
+<!-- Section: Metrics & Stats -->
+<section class="stats-section" id="stats">
+  <div class="stats-card">
     
-    <!-- 2. HERO SECTION -->
-    <section class="hero-container">
-      <!-- Pulsating Background SVG Wrapper -->
-   <div class="bg-svg-wrapper">
-  <object type="image/svg+xml" data="Vector.svg" class="hero-logo-svg"></object>
+    <!-- Outer L-shaped Corner Brackets -->
+    <div class="card-corner top-left"></div>
+    <div class="card-corner top-right"></div>
+    <div class="card-corner bottom-left"></div>
+    <div class="card-corner bottom-right"></div>
+
+    <!-- Background Ambient Glow & Grid -->
+    <div class="stats-glow"></div>
+    <div class="stats-grid-bg"></div>
+
+    <!-- Content Split Layout -->
+    <div class="stats-content">
+      
+      <!-- Left Column: Big Counter Display -->
+      <div class="stats-metric-wrapper">
+        <span class="section-tag" data-decode="■ DATA METRICS">■ DATA METRICS</span>
+        <div class="metric-display">
+          <span class="counter-num" id="counter" data-target="2000">0</span><span class="plus-sign">+</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Description Copy -->
+      <div class="stats-info">
+        <p>
+          Interconnected data and intelligence layers spanning geospatial, environmental, infrastructural, economic, demographic, market and institutional conditions.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Section 4: Method Accordion -->
+<section class="method-section" id="how-it-works">
+  <div class="method-header">
+    <span class="section-tag" data-decode="■ METHOD">■ METHOD</span>
+    <h2>Built Around The Decision <br><span class="italic-green">Not The Dataset.</span></h2>
+    <p class="method-description">
+      Qoridian™ is the proprietary intelligence capability behind our work. It connects and interrogates data and evidence across multiple layers, adapting to the question rather than forcing every decision through a fixed model. <br>
+      It begins with what needs to be understood.
+    </p>
+  </div>
+
+  <!-- Interactive Expanding Accordion -->
+  <div class="accordion-container">
+    
+    <!-- Card 01 -->
+    <div class="accordion-card active" data-index="0">
+      <div class="card-inner">
+        <div class="card-visual">
+          <canvas class="card-canvas" data-shape="1"></canvas>
+        </div>
+        <div class="card-content">
+          <h3>Frame the question</h3>
+          <p>Define the decision, the operating context and what the intelligence must make possible.</p>
+        </div>
+      </div>
+      <div class="card-number">01</div>
+    </div>
+
+    <!-- Card 02 -->
+    <div class="accordion-card" data-index="1">
+      <div class="card-inner">
+        <div class="card-visual">
+          <canvas class="card-canvas" data-shape="2"></canvas>
+        </div>
+        <div class="card-content">
+          <h3>Connect the evidence</h3>
+          <p>Bring the relevant data, conditions and signals into relation across the system.</p>
+        </div>
+      </div>
+      <div class="card-number">02</div>
+    </div>
+
+    <!-- Card 03 -->
+    <div class="accordion-card" data-index="2">
+      <div class="card-inner">
+        <div class="card-visual">
+          <canvas class="card-canvas" data-shape="3"></canvas>
+        </div>
+        <div class="card-content">
+          <h3>Interpret the system</h3>
+          <p>Surface the relationships, dependencies and conditions that matter to the decision.</p>
+        </div>
+      </div>
+      <div class="card-number">03</div>
+    </div>
+
+    <!-- Card 04 -->
+    <div class="accordion-card" data-index="3">
+      <div class="card-inner">
+        <div class="card-visual">
+          <canvas class="card-canvas" data-shape="4"></canvas>
+        </div>
+        <div class="card-content">
+          <h3>Make the decision actionable</h3>
+          <p>Translate connected intelligence into insight that can inform what happens next.</p>
+        </div>
+      </div>
+      <div class="card-number">04</div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- Section 4: What The Capability Enables -->
+<section class="capabilities-section" id="capabilities">
+  <div class="capabilities-header">
+    <span class="section-tag" data-decode="■ WHAT THE CAPABILITY ENABLES">■ WHAT THE CAPABILITY ENABLES</span>
+    <h2>A Stronger Basis For Action.</h2>
+  </div>
+
+  <div class="capabilities-grid">
+    
+    <!-- Item 1 -->
+    <div class="capability-card">
+      <div class="icon-slot">
+       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAw0lEQVR4nO3YQQqEMBAF0Vy+l3WT3DGzFSGMDmMS01XgSoSftxC0FDOzCVGjHa+SLQQIAdgRgNPBege8e/81UAgQApAJgB8Hjn7usRAgBCATALMHzN6DACEAmQBY7MDD9yJACIAAIQBZAcwsV3R+RfWu7fYiQAhAZgAzs2Nve4n4NVgFaAJUAZoA9aG9LAYyfA8ChABkBvjXgNHPPRYChABkBvg2sDf07v1lD3xOgCpASw1wtW0PdjUBqgAtNYCZlRX6AKDIekzBeX+NAAAAAElFTkSuQmCC" alt="define-location">
+      </div>
+      <div class="capability-content">
+        <h3>Locate opportunity</h3>
+        <p>See where resources, demand, infrastructure, access and enabling conditions align.</p>
+      </div>
+    </div>
+
+    <!-- Item 2 -->
+    <div class="capability-card">
+      <div class="icon-slot">
+         <img src="./location-1.svg" alt="Test viability" class="svg-icon">
+      </div>
+      <div class="capability-content">
+        <h3>Test viability</h3>
+        <p>Examine whether an idea, asset or opportunity is supported by the system around it.</p>
+      </div>
+    </div>
+
+    <!-- Item 3 -->
+    <div class="capability-card">
+      <div class="icon-slot">
+        <img src="./find-3.svg" alt="Surface exposure" class="svg-icon">
+      </div>
+      <div class="capability-content">
+        <h3>Surface exposure</h3>
+        <p>Identify the dependencies, constraints and emerging risks that could alter an intended outcome.</p>
+      </div>
+    </div>
+
+    <!-- Item 4 -->
+    <div class="capability-card">
+      <div class="icon-slot">
+        <img src="./arrow sides-4.svg" alt="Compare pathways" class="svg-icon">
+      </div>
+      <div class="capability-content">
+        <h3>Compare pathways</h3>
+        <p>Understand how different choices, assumptions and conditions could shape what follows.</p>
+      </div>
+    </div>
+
+    <!-- Item 5 -->
+    <div class="capability-card">
+      <div class="icon-slot">
+        <img src="./kite-5.svg" alt="Set priorities" class="svg-icon">
+      </div>
+      <div class="capability-content">
+        <h3>Set priorities</h3>
+        <p>Distinguish what is material, where attention is required and what should happen first.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- Section: Application Grid (4 Columns) -->
+<section class="application-section" id="application">
+  <div class="application-header">
+    <span class="section-tag" data-decode="■ APPLICATION">■ APPLICATION</span>
+    <h2>One Intelligence Capability. <br><span class="italic-green">Applied To The Question At Hand.</span></h2>
+    <p class="application-description">
+      The capability can be configured around a place, resource, network, market, investment or national priority. The application changes. The principle remains the same: connect the conditions, read the relationships and build a clearer basis for action.
+    </p>
+  </div>
+
+  <div class="app-grid">
+    
+    <!-- Card 1 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+       <img src="./mining icon.svg" alt="Icon description" class="svg-icon">
+      </div>
+      <h3 class="app-title">Resources <br>and Extractives</h3>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+       <img src="./energy and power icon.svg" alt="Icon description" class="svg-icon">
+      </div>
+      <h3 class="app-title">Energy <br>and utilities</h3>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+        <img src="./government icon.svg" alt="Icon description" class="svg-icon">
+      </div>
+      <h3 class="app-title">Infrastructure <br>and Connectivity</h3>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA3UlEQVR4nO2UsQ3AIBDEbjMmuH3ZLulpoiiQe4Qt0UX4cBEJAAAAYBLu7Vp5VB0ToBHAJwXww8C3D5h933JMgEYAnxTAPw8sF8QEaATwSQE8+Se2m1/pAWm/0gPSfqUHpP0aL9ztEOArLvAIAvRCATT5++p+pQek/UoPSPuVHpD2Kz0g7Vd6QNqv9IC0X+kBab/GC3c7BPiKCzyCAL1QAE3+vrpf6QFpv9ID0n6lB6T9rwV/B1j+4BECdAJcRwdYPbD8g0cI0AlwHR3gaeDso+qYAI0APjkAAAAAaBdug2adSN/oO+IAAAAASUVORK5CYII=" alt="globe">
 </div>
+      <h3 class="app-title">Land, Environment <br>and Climate</h3>
+    </div>
 
-      <div class="hero-content">
-        <h1>The whole picture <span class="green-text">shapes the decision.</span></h1>
-         <p class="hero-lead">Every place carries more than what is visible at first glance.</p>
-        <p class="hero-lead">Resources, infrastructure, institutions and markets are shaped by what has happened there, what is changing now and what may be beginning to emerge.</p>
-        <h4 style="color: #5DB847;">Qoridian brings those layers into view.</h4>
-        <a href="mailto:d.amachree@outlook.com" class="cta-btn">Get in touch</a>
+    <!-- Card 5 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+        <img src="./dataset-1.svg" alt="Icon description" class="svg-icon">
       </div>
-    </section>
+      <h3 class="app-title">Markets, Trade <br>and Investment</h3>
+    </div>
 
-    <!-- 3. PHILOSOPHY SECTION -->
-   <section class="philosophy-section">
-  <div class="section-container philosophy-layout">
+    <!-- Card 6 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+        <img src="./government icon.svg" alt="Icon description" class="svg-icon">
+      </div>
+      <h3 class="app-title">Public & Development <br>Systems</h3>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="app-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="app-icon-slot">
+       <img src="./security.svg" alt="Icon description" class="svg-icon">
+      </div>
+      <h3 class="app-title">Security & Critical <br>Systems</h3>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Section 7: Sector Intelligence -->
+<section class="sector-section" id="explore">
+  <div class="sector-header">
+    <span class="section-tag" data-decode="■ SECTOR INTELLIGENCE">■ SECTOR INTELLIGENCE</span>
+    <h2>Explore The Systems <br><span class="italic-green">Shaping National Outcomes.</span></h2>
+    <p class="sector-description">
+      Qoridian Sector Briefs examine the infrastructure, institutions, markets and investment conditions shaping critical sectors—and the relationships decision-makers need to understand.
+    </p>
+  </div>
+
+  <div class="sector-grid">
     
-    <!-- Left Side: Content Box -->
-    <div class="philosophy-text-block">
-      <h2>Reading what surrounds <span class="green-text">the decision.</span></h2>
-      <div class="philosophy-content">
-        <p>The significance of an asset, a resource or an opportunity is shaped by what surrounds it. Access, infrastructure, policy, capital, movement and risk each tell part of the story. Read together, and over time, they begin to show where conditions are heading.</p>
-        <p>Qoridian works with governments, investors and enterprises where context is complex, conditions are moving and a partial picture is not enough.</p>
+    <!-- Box 1: Strategic Mining (Amber Theme) -->
+    <div class="sector-card theme-amber">
+      <div class="sector-bg-img-wrapper">
+        <img src="./main mining art.png" alt="" class="sector-bg-img">
+      </div>
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+      
+      <div class="sector-card-body">
+        <h3>Strategic Mining Development</h3>
+        <p>Mining ministries, regulators, state mining institutions, investment promotion teams and public-sector advisors.</p>
+      </div>
+
+      <div class="sector-footer">
+        <span class="footer-label">
+        <a href="./Strategic Mineral Development.html" class="footer-link" target="_blank" rel="noopener noreferrer">
+          MINING & MINERALS SECTOR BRIEF
+          <img src="arrow.svg" alt="" class="footer-arrow-img">
+        </a>
+        </span>
+      </div>
+    </div>
+
+    <!-- Box 2: Broadband & Digital (Purple Theme) -->
+    <div class="sector-card theme-purple">
+      <div class="sector-bg-img-wrapper">
+        <img src="./national digital.png" alt="" class="sector-bg-img">
+      </div>
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+      
+      <div class="sector-card-body">
+        <h3>Broadband & Digital Access</h3>
+        <p>Broadband infrastructure, digital access and investment across the wider connectivity ecosystem.</p>
+      </div>
+
+      <div class="sector-footer">
+        <span class="footer-label">
+        <a href="./Broadband and Digital Access.html" class="footer-link" target="_blank" rel="noopener noreferrer">
+          DIGITAL INFRASTRUCTURE & CONNECTIVITY SECTOR BRIEF
+          <img src="arrow.svg" alt="" class="footer-arrow-img">
+        </a>
+        </span>
+      </div>
+    </div>
+
+
+    <!-- Box 3: Powering National Development (Blue Theme) -->
+    <div class="sector-card theme-blue">
+      <div class="sector-bg-img-wrapper">
+        <img src="./nepa grid.png" alt="" class="sector-bg-img">
+      </div>
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+      
+      <div class="sector-card-body">
+        <h3>Powering National Development</h3>
+        <p>Generation, transmission, distribution and investment across the wider energy system.</p>
+      </div>
+
+      <div class="sector-footer">
+      <span class="footer-label">
+  <a href="https://drive.google.com/file/d/1wZ5rrbdzjmsb-OhvQIIvEekhneQ6CH1t/preview" class="footer-link" target="_blank" rel="noopener noreferrer">
+    ENERGY & POWER SYSTEMS SECTOR BRIEF
+    <img src="arrow.svg" alt="" class="footer-arrow-img">
+  </a>
+</span>
+      </div>
+    </div>
+
+    <!-- Box 4: Water Security (Cyan Theme) -->
+    <div class="sector-card theme-cyan">
+      <div class="sector-bg-img-wrapper">
+        <img src="./water main art.png" alt="" class="sector-bg-img">
+      </div>
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+      
+      <div class="sector-card-body">
+        <h3>Water Security & Basin Resilience</h3>
+        <p>Resources, infrastructure, allocation and climate resilience across water systems and river basins.</p>
+      </div>
+
+     <div class="sector-footer">
+  <span class="footer-label">
+    <a href="https://drive.google.com/file/d/10olX-sbVnmD9e4hCKLFLHco9QzNseb9W/preview" class="footer-link" target="_blank" rel="noopener noreferrer">
+      WATER RESOURCES & BASIN MANAGEMENT SECTOR BRIEF
+      <img src="arrow.svg" alt="" class="footer-arrow-img">
+    </a>
+  </span>
+</div>
+    </div>
+
+    <!-- Box 5: Healthcare Infrastructure (Teal Theme) -->
+    <div class="sector-card theme-teal">
+      <div class="sector-bg-img-wrapper">
+        <img src="./healthcare access.png" alt="" class="sector-bg-img">
+      </div>
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+      
+      <div class="sector-card-body">
+        <h3>Healthcare Infrastructure & Access</h3>
+        <p>Infrastructure, workforce, service delivery and investment across the wider health system.</p>
+      </div>
+
+      <div class="sector-footer">
+        <span class="footer-label">
+        <a href="https://drive.google.com/file/d/1ZXN5Brv8Jqsp3DLBUPk54HsZGKh1jMNn/preview" target="_blank" rel="noopener noreferrer">
+          HEALTH SYSTEMS & SERVICE DELIVERY SECTOR BRIEF
+          <img src="arrow.svg" alt="" class="footer-arrow-img">
+        </a>
+        </span>
+      </div>
+    </div>
+
+    <!-- Box 6: National Food Systems (Emerald Theme) -->
+    <div class="sector-card theme-emerald">
+      <div class="sector-bg-img-wrapper">
+        <img src="./food systems.png" alt="" class="sector-bg-img">
+      </div>
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+      
+      <div class="sector-card-body">
+        <h3>National Food Systems</h3>
+        <p>Production, infrastructure, market access and investment across the wider food system.</p>
+      </div>
+
+      <div class="sector-footer">
+       <span class="footer-label">
+  <a href="https://drive.google.com/file/d/1K6-BuTxqBinHCNjPNF_2aynVmz9LMKJi/preview" target="_blank" rel="noopener noreferrer">
+    AGRICULTURE & FOOD SYSTEMS SECTOR BRIEF
+    <img src="arrow.svg" alt="" class="footer-arrow-img">
+  </a>
+</span>
       </div>
     </div>
 
   </div>
 </section>
 
-  <section class="features-section" style="position: relative; overflow: hidden;">
-  
-  <div class="section-topography-bg"></div>
 
-  <div class="section-container" style="position: relative; z-index: 2;">
-    <h2>What we see</h2>
+<!-- Section 8: Who We Work With -->
+<section class="partners-section" id="who-we-work-with">
+  <div class="partners-header">
+    <span class="section-tag" data-decode="■ WHO WE WORK WITH">■ WHO WE WORK WITH</span>
+    <h2>Built For Decisions <br> <span class="italic-green">With Consequence.</span></h2>
+  </div>
+
+  <div class="partners-grid">
     
-    <div class="features-grid">
-      <div class="feature-card">
-        <span class="card-num">01</span>
-        <div class="wireframe-container">
-          <svg class="wireframe-graphic" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M50 15 L80 45 L50 75 L20 45 Z" />
-            <path d="M50 15 L50 75" />
-            <path d="M20 45 L80 45" />
-            <path d="M50 15 L35 45 L50 75 L65 45 Z" />
-            <path d="M20 45 L35 45 M65 45 L80 45" />
-            <path d="M25 20 L25 30 M20 25 L30 25" />
-            <path d="M75 65 L75 75 M70 70 L80 70" />
-          </svg>
-        </div>
-        <h3>Critical Minerals</h3>
-        <div class="card-underline"></div>
+    <!-- Card 1 -->
+    <div class="partner-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="partner-img-wrapper">
+        <img src="./government art.png" alt="Governments & Public Institutions" class="partner-img">
       </div>
 
-      <div class="feature-card">
-        <span class="card-num">02</span>
-        <div class="wireframe-container">
-          <svg class="wireframe-graphic" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M10 75 L90 75" stroke-width="2" />
-            <path d="M15 75 L35 35 L55 75 L75 35 L85 55" />
-            <path d="M35 35 L75 35" />
-            <line x1="25" y1="55" x2="25" y2="75" />
-            <line x1="45" y1="55" x2="45" y2="75" />
-            <line x1="65" y1="55" x2="65" y2="75" />
-            <path d="M10 82 L90 82" stroke-dasharray="3 3" />
-          </svg>
-        </div>
-        <h3>Infrastructure</h3>
-        <div class="card-underline"></div>
-      </div>
-
-      <div class="feature-card">
-        <span class="card-num">03</span>
-        <div class="wireframe-container">
-          <svg class="wireframe-graphic" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M60 15 L25 55 H55 L40 85 L75 45 H45 Z" fill="none" stroke-linejoin="round" />
-            <path d="M20 30 C15 40 15 60 20 70" stroke-dasharray="2 2" />
-            <path d="M80 30 C85 40 85 60 80 70" stroke-dasharray="2 2" />
-            <circle cx="60" cy="15" r="2" fill="currentColor" />
-            <circle cx="40" cy="85" r="2" fill="currentColor" />
-          </svg>
-        </div>
-        <h3>Energy</h3>
-        <div class="card-underline"></div>
-      </div>
-
-      <div class="feature-card">
-        <span class="card-num">04</span>
-        <div class="wireframe-container">
-          <svg class="wireframe-graphic" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M50 85 V25" stroke-width="1.5" />
-            <path d="M50 65 C35 60 30 45 50 45" />
-            <path d="M50 45 C35 40 30 25 50 25" />
-            <path d="M50 55 C65 50 70 35 50 35" />
-            <path d="M50 35 C65 30 70 15 50 15" />
-            <path d="M25 85 H75" />
-            <path d="M30 90 H70" stroke-dasharray="2 2" />
-          </svg>
-        </div>
-        <h3>Food Systems</h3>
-        <div class="card-underline"></div>
-      </div>
-
-      <div class="feature-card">
-        <span class="card-num">05</span>
-        <div class="wireframe-container">
-          <svg class="wireframe-graphic" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M30 20 H70 C70 20 75 50 50 80 C25 50 30 20 30 20 Z" stroke-linejoin="round" />
-            <rect x="42" y="47" width="16" height="12" rx="1" />
-            <path d="M46 47 V40 C46 35 54 35 54 40 V47" />
-            <circle cx="50" cy="48" r="32" stroke-dasharray="3 3" />
-          </svg>
-        </div>
-        <h3>Safety & Security</h3>
-        <div class="card-underline"></div>
-      </div>
-
-      <div class="feature-card">
-        <span class="card-num">06</span>
-        <div class="wireframe-container">
-          <svg class="wireframe-graphic" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M20 20 H80 V80 H20 Z" stroke-dasharray="4 4" />
-            <path d="M25 70 L45 45 L60 55 L75 30" stroke-width="1.5" />
-            <path d="M20 50 A 30 30 0 0 1 50 20" />
-            <circle cx="75" cy="30" r="3" fill="currentColor" />
-            <circle cx="45" cy="45" r="2" />
-            <circle cx="60" cy="55" r="2" />
-          </svg>
-        </div>
-        <h3>Development Patterns</h3>
-        <div class="card-underline"></div>
+      <div class="partner-card-content">
+        <h3>Governments <br>& Public Institutions</h3>
+        <p>Understand national systems, direct priorities and Strengthen The basis for policy, investment And delivery.</p>
       </div>
     </div>
+
+    <!-- Card 2 -->
+    <div class="partner-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="partner-img-wrapper">
+        <img src="./investors art.png" alt="Investors & Asset Managers" class="partner-img">
+      </div>
+
+      <div class="partner-card-content">
+        <h3>Investors <br>& Asset Managers</h3>
+        <p>Evaluate multi-layered risk, identify value drivers <br> and stress-test assumptions across operating contexts.</p>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="partner-card">
+      <div class="card-corner top-left"></div>
+      <div class="card-corner top-right"></div>
+      <div class="card-corner bottom-left"></div>
+      <div class="card-corner bottom-right"></div>
+
+      <div class="partner-img-wrapper">
+        <img src="./corporate art.png" alt="Corporates & Infrastructure Developers" class="partner-img">
+      </div>
+
+      <div class="partner-card-content">
+        <h3>Corporates & <br>Infrastructure Developers</h3>
+        <p>Navigate complex systems, align capital with long-term signals and optimize strategic execution.</p>
+      </div>
+    </div>
+
   </div>
 </section>
-    <!-- 6. DEPLOYMENT SECTION (BOTTOM HERO) -->
-    <section id="contact" class="deployment-section">
-      <div class="section-container">
-        <h2>A clear view of where capital should be deployed</h2>
-        <p>Qoridian sees how conditions are evolving across an area of interest, helping decision-makers identify where capital has the strongest basis to take hold.</p>
-         <a href="mailto:d.amachree@outlook.com" class="footer-btn">Start a conversation</a>
-      </div>
-    </section>
+
+
+<!-- Section: Qoridian Insights -->
+<section class="insights-section" id="insights">
+  <div class="insights-card">
     
+    <!-- Outer Corner Brackets -->
+    <div class="card-corner top-left"></div>
+    <div class="card-corner top-right"></div>
+    <div class="card-corner bottom-left"></div>
+    <div class="card-corner bottom-right"></div>
 
-  </main>
+    <!-- Background Grid Container (Paste SVG inside or set via CSS) -->
+    <div class="insights-grid-overlay">
+     <img src="./grid lines.svg">
+    </div>
 
-  <footer class="site-footer">
-  <div class="footer-grid-overlay"></div>
- 
+    <!-- Centered Content Wrapper -->
+    <div class="insights-content">
 
-  <div class="giant-footer-brand-svg">
-    <object type="image/svg+xml" data="logo2.svg" class="footer-logo-object"></object>
+        <div class="insights-tagline">
+        <span class="tagline-icon">■</span>
+        <span class="tagline-text">QORIDIAN INSIGHTS</span>
+      </div>
+      <h2>
+        The Relationships <br>
+        <span class="italic-green">Behind The Headline.</span>
+      </h2>
+
+      <p class="insights-description">
+        Original analysis, sector intelligence and data-led perspectives on markets, infrastructure, resources and national systems. Connecting signals across sectors, places and time to examine the forces shaping what comes next.
+      </p>
+
+      <!-- Coming Soon Button with Corner Brackets -->
+      <div class="coming-soon-btn">
+        <div class="card-corner top-left"></div>
+        <div class="card-corner top-right"></div>
+        <div class="card-corner bottom-left"></div>
+        <div class="card-corner bottom-right"></div>
+        <span>COMING SOON</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Section 9: Call To Action -->
+<section class="cta-section" id="contact">
+  <div class="cta-container">
+    <h2>What Would Change If You Could See <br> <span class="italic-green">The Whole System?</span></h2>
+    <p class="cta-subtext">
+      Bring us the question. Qoridian will bring the relevant context into relation.
+    </p>
+    <a href="mailto:contact@qoridian.com" class="btn btn-framed cta-btn">START A CONVERSATION</a>
+  </div>
+</section>
+
+
+<!-- Footer Section -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <!-- Corner Bracket Accents -->
+    <div class="card-corner top-left"></div>
+    <div class="card-corner top-right"></div>
+    <div class="card-corner bottom-left"></div>
+    <div class="card-corner bottom-right"></div>
+
+    <!-- Top Row: Logo & Tagline -->
+    <div class="footer-top">
+      <div class="footer-logo-slot">
+        <!-- PASTE YOUR LOGO SVG / IMG HERE -->
+        <img src="./qoridian logo footer.svg" alt="Qoridian" class="footer-logo-img">
+      </div>
+      <p class="footer-tagline">
+        Contextual intelligence <br>for consequential decisions.
+      </p>
+    </div>
+
+    <!-- Bottom Row: Copyright & Social Links -->
+    <div class="footer-bottom">
+      <p class="copyright">© 2026 Qoridian. All rights reserved.</p>
+      
+      <div class="footer-socials">
+        <a href="mailto:team@qoridian.africa">Email</a>
+      </div>
+    </div>
   </div>
 </footer>
 
-<script src="scroll.js"></script>
+
+
+  <script src="script.js"></script>
 </body>
 </html>
