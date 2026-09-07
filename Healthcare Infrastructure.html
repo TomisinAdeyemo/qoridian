@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Infrastructure & Access</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" type="image/x-icon" href="./qoridian logo footer.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <canvas id="bgNodesCanvas"></canvas>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <a href="./index.html" class="logo">
+      <img src="./qoridian logo.svg" alt="Qoridian Logo">
+    </a>
+    
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">ABOUT</a>
+      <a href="#how-it-works">HOW IT WORKS</a>
+      <a href="#who-we-work-with">WHO WE WORK WITH</a>
+      <a href="#applications">APPLICATIONS</a>
+      <a href="#sector-intelligence">SECTOR INTELLIGENCE</a>
+    </nav>
+    
+    <a href="#explore" class="btn btn-framed desktop-only-btn">EXPLORE QORIDIAN</a>
+  </header>
+
+
+<section class="image-section section-1">
+  <img src="./broadband_1.png" alt="">
+</section>
+
+<section class="image-section section-2">
+  <img src="./broadband_2.png" alt="">
+</section>
+
+<section class="image-section section-3">
+  <img src="./broadband_3.png" alt="">
+</section>
+
+<section class="image-section section-4">
+  <img src="./broadband_4.png" alt="">
+</section>
+
+<section class="image-section section-5">
+  <img src="./broadband_5.png" alt="">
+</section>
+
+
+
+<!-- Footer Section -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <!-- Corner Bracket Accents -->
+    <div class="card-corner top-left"></div>
+    <div class="card-corner top-right"></div>
+    <div class="card-corner bottom-left"></div>
+    <div class="card-corner bottom-right"></div>
+
+    <!-- Top Row: Logo & Tagline -->
+    <div class="footer-top">
+      <div class="footer-logo-slot">
+        <!-- PASTE YOUR LOGO SVG / IMG HERE -->
+        <img src="./qoridian logo footer.svg" alt="Qoridian" class="footer-logo-img">
+      </div>
+      <p class="footer-tagline">
+        Contextual intelligence <br>for consequential decisions.
+      </p>
+    </div>
+
+    <!-- Bottom Row: Copyright & Social Links -->
+    <div class="footer-bottom">
+      <p class="copyright">© 2026 Qoridian. All rights reserved.</p>
+      
+      <div class="footer-socials">
+        <a href="mailto:contact@qoridian.com">Email</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const imageSections = document.querySelectorAll(".image-section");
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+        }
+      });
+    },
+    {
+      threshold: 0.15
+    }
+  );
+
+  imageSections.forEach((section) => {
+    observer.observe(section);
+  });
+});
+</script>
+</body>
+</html>
