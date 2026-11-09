@@ -318,7 +318,7 @@ h1, h2, h3 {
 }
 
 #networkCanvas {
-  max-width: 100%;
+  max-width: 150%;
   height: auto;
 }
 
